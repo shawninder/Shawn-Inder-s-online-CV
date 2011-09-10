@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS Projects
 (
-	id INT NOT NULL AUTO_INCREMENT PRIMARY_KEY,
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(50),
 	description TEXT,
 	logoPath VARCHAR(50) COMMENT 'full path to image, needs to work as-is in <img> tag',
