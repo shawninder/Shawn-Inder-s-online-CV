@@ -1,6 +1,0 @@
-CREATE TABLE IF NOT EXISTS Tags
-(
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(20) NOT NULL,
-	description TEXT COMMENT 'TODO: what will this be used for?'
-);
