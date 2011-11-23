@@ -1,0 +1,20 @@
+#experiences img.profile_pic
+{
+	float: left;
+	width: 8em;
+	padding: 0 .5em .5em 0;
+}
+
+#experiences .ui-widget-footer
+{
+	border: 1px solid #ccc;
+	border-width: 0 1px 1px 1px;
+	margin-top: 0;
+	padding: .5em;
+}
+
+.dates
+{
+	font-size: 85%;
+	float: right;
+}

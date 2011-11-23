@@ -1,0 +1,15 @@
+.ui-tabs
+{
+	padding: 1em;
+}
+
+.ui-tabs-nav
+{
+	float: right;
+}
+
+.ui-tabs-panel
+{
+	clear: both;
+	border-width: 1px;
+}

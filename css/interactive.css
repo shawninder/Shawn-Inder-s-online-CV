@@ -1,0 +1,62 @@
+/* 50-50 LAYOUT */
+#interactive
+{
+	clear: left;
+	float: left;
+	width: 96%;
+	overflow: hidden;
+}
+
+#container
+{
+	float: left;
+	width: 100%;
+	position: relative;
+	right: 50%;
+}
+
+#experiences
+{
+	float: left;
+	width: 46%;
+	position: relative;
+	left: 52%;
+}
+
+#skills
+{
+	float: left;
+	width: 46%;
+	position: relative;
+	left: 56%;
+}
+
+/* END 50-50 LAYOUT */
+
+h3
+{
+	margin-bottom: 0;
+	padding: .5em;
+}
+
+.ui-widget-content
+{
+	padding: .5em;
+	border: 0;
+}
+
+.ui-state-default
+{
+	cursor: pointer;
+}
+
+.half h2
+{
+	text-align: center;
+}
+
+.ui-icon
+{
+	float: left;
+	margin: .25em .25em .25em 0;
+}

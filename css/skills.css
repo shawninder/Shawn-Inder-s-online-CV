@@ -1,0 +1,10 @@
+.skills-list li .ui-widget-content
+{
+	padding: 1em;
+}
+
+.selfEvaluation
+{
+	font-size: 85%;
+	float: right;
+}
