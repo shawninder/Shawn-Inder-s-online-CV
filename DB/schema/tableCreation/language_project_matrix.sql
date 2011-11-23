@@ -4,6 +4,6 @@ CREATE TABLE IF NOT EXISTS language_project_matrix
 	project INT NOT NULL,
 	description TEXT NOT NULL,
 	FOREIGN KEY (language) REFERENCES Languages(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-	FOREIGN KEY (projects) REFERENCES Projects(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-	PRIMARY KEY (language, projects)
+	FOREIGN KEY (project) REFERENCES Projects(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	PRIMARY KEY (language, project)
 );
