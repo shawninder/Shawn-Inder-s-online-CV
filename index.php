@@ -49,10 +49,10 @@
 					$('.ui-widget-content', $(this).parent()).toggle();
 					$(this).click(function()
 					{
-						$('.ui-widget-content', $(this).parent()).toggle("blind", {"easing":"easeInOutCirc"}, "fast");
+						$('.ui-widget-content', $(this).parent()).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
 						$('.expander-icon', $(this)).toggleClass("ui-icon-plusthick")
 																				.toggleClass("ui-icon-minusthick");
-						$(this).parent().siblings().toggle("fade", {"easing":"easeInOutCirc"}, "slow");
+						//$(this).parent().siblings().toggle("fade", {"easing":"easeInOutCirc"}, "slow");
 					});
 				});
 				
