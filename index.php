@@ -26,7 +26,7 @@
 		<script type="text/javascript" src="js/jquery.cycle.all.latest.js"></script>
 		<script type="text/javascript">
 			function log() {
-				window.console && console.log && console.log('[cycle] ' + Array.prototype.join.call(arguments,' '));
+				window.console && console.log && console.log('[log] ' + Array.prototype.join.call(arguments,' '));
 			}
 			function adjustPrevNextButtons(isNext, zeroBasedSlideIndex, slideElement)
 			{
@@ -40,10 +40,41 @@
 					$('.next', $(currSlideElement).parent().parent()).removeClass("ui-helper-hidden-accessible");
 				}
 			}
+			
+			function allToMini()
+			{
+				var statefuls = $('.stateful');
+				statefuls.each(function()
+				{
+					switch( $(this).data('state') )
+					{
+						case 'allEyes':
+							$('.ui-widget-content', this).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
+							$('.expander-icon', this).toggleClass("ui-icon-plusthick")
+																				.toggleClass("ui-icon-minusthick");
+							break;
+						case 'background':
+						case 'mini':
+						case 'referred':
+						default:
+							break;
+					}
+					$(this).data('state', 'mini');
+				});
+			}
+			
+			function toAllEyes(element)
+			{
+				allToMini(); // TODO should be allToBackground();
+				$('.ui-widget-content', element).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
+				$('.expander-icon', element).toggleClass("ui-icon-plusthick")
+																		.toggleClass("ui-icon-minusthick");
+				element.data('state', 'allEyes');
+			}
+			
 			$(document).ready(function()
 			{
 				$('body').tabs();
-				
 				$('.slideshow').each(function() {
 					var parent = $(this).parent();
 					$(this).cycle({
@@ -64,9 +95,18 @@
 					$('.ui-widget-content', $(this).parent()).toggle();
 					$(this).click(function()
 					{
-						$('.ui-widget-content', $(this).parent()).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
-						$('.expander-icon', $(this)).toggleClass("ui-icon-plusthick")
-																				.toggleClass("ui-icon-minusthick");
+						switch( $(this).parent().data('state') )
+						{
+							case 'allEyes':
+								allToMini(); // TODO
+								break;
+							case 'background':
+							case 'mini':
+							case 'referred':
+							default:
+								toAllEyes($(this).parent()); // TODO
+								break;
+						}
 					});
 				});
 			});
@@ -127,7 +167,7 @@
 											ON P.id = R.author
 									WHERE ERM.experience = " . $experience['eid'];
 								$referrals = mysql_query($sql_getReferrals);
-								echo("<li id=\"experience_" . $experience['eid'] . "\">
+								echo("<li id=\"experience_" . $experience['eid'] . "\" class=\"stateful\">
 												<h3 class=\"ui-widget-header ui-corner-top ui-state-default expander\"><span class=\"ui-icon ui-icon-plusthick expander-icon\"></span>" . $experience['position'] . " <span class=\"dates\">(" . $experience['startDate'] . " » " . $endDate . ")</span><div style=\"clear: both;\"></div></h3>
 												<div class=\"ui-widget-content\">
 													<img class=\"profile_pic\" src=\"" . $experience['logoPath'] . "\" alt=\"" . $experience['name'] . "\" />
@@ -183,7 +223,7 @@
 							$languages = mysql_query($sql_getLanguages);
 							while($language = mysql_fetch_array($languages))
 							{
-								echo("<li id=\"language_" . $language['id'] . "\">");
+								echo("<li id=\"language_" . $language['id'] . "\" class=\"stateful\">");
 								echo("	<h3 class=\"ui-widget-header ui-corner-all ui-state-default expander\" title=\"" . $language['name'] . "\">
 													<span class=\"ui-icon ui-icon-plusthick expander-icon\">Expand section</span>");
 								echo(($language['shortName'] != "")?$language['shortName']:$language['name']);
