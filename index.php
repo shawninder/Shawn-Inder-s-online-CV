@@ -41,35 +41,128 @@
 				}
 			}
 			
-			function allToMini()
+			function manyToMini(elements)
 			{
-				var statefuls = $('.stateful');
-				statefuls.each(function()
+				var nbElements = elements.length;
+				for(var i = 0; i < nbElements; ++i)
 				{
-					switch( $(this).data('state') )
-					{
-						case 'allEyes':
-							$('.ui-widget-content', this).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
-							$('.expander-icon', this).toggleClass("ui-icon-plusthick")
-																				.toggleClass("ui-icon-minusthick");
-							break;
-						case 'background':
-						case 'mini':
-						case 'referred':
-						default:
-							break;
-					}
-					$(this).data('state', 'mini');
-				});
+					toMini(elements[i]);
+				}
+			}
+			function toMini(element)
+			{
+				elementObject = $('#' + element);
+				switch( elementObject.data('state') )
+				{
+					case 'allEyes':
+						$('.ui-widget-content', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
+						$('.expander-icon', elementObject).toggleClass("ui-icon-plusthick")
+																							.toggleClass("ui-icon-minusthick");
+						break;
+					case 'background':
+					case 'mini':
+					case 'referred':
+					default:
+						break;
+				}
+				elementObject.data('state', 'mini');
+			}
+			
+			function manyToReferred(elements)
+			{
+				var nbElements = elements.length;
+				for(var i = 0; i < nbElements; ++i)
+				{
+					toReferred(elements[i]);
+				}
+			}
+			function toReferred(element)
+			{
+				elementObject = $('#' + element);
+				switch( elementObject.data('state') )
+				{
+					case 'allEyes':
+						$('.ui-widget-content', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
+						$('.expander-icon', elementObject).toggleClass("ui-icon-plusthick")
+																							.toggleClass("ui-icon-minusthick");
+					case 'mini':
+						elementObject.effect('highlight');
+						break;
+					case 'background':
+					case 'referred':
+					default:
+						break;
+				}
+				elementObject.data('state', 'referred');
 			}
 			
 			function toAllEyes(element)
 			{
-				allToMini(); // TODO should be allToBackground();
+				// Minimize all elements
+				var elements = new Array();
+				$('[id^=experience_]').add($('[id^=language_]')).each(function()
+				{
+					elements.push($(this).attr('id'));
+				});
+				
+				manyToMini(elements);
+				
+				// Make this element allEyes
 				$('.ui-widget-content', element).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
 				$('.expander-icon', element).toggleClass("ui-icon-plusthick")
 																		.toggleClass("ui-icon-minusthick");
+
+				var links = element.data('linkedTo');
+				if(links)
+				{
+					manyToReferred(links);
+				}
+				
+				// Done
 				element.data('state', 'allEyes');
+			}
+			
+			function getLinkInfo()
+			{
+				$.ajax({
+					type: "GET",
+					url: "linkInfo.php"
+				}).done(function(msg)
+				{
+					var data = $.parseJSON(msg);
+					var dataLength = data.length;
+					for(var i = 0; i < dataLength; ++i)
+					{
+						var language = data[i].language;
+						var languageID = "language_" + language;
+						var experience = data[i].experience;
+						var experienceID = "experience_" + experience;
+						var description = "<div class=\"linkDescription\">" + data[i].description + "</div>";
+						var languageElement = $('#' + languageID);
+						var experienceElement = $('#' + experienceID);
+						languageElement.append(description);
+						experienceElement.append(description);
+						
+						if(languageElement.data('linkedTo'))
+						{
+							languageElement.data('linkedTo').push(experienceID);
+						}
+						else
+						{
+							var newData = new Array(experienceID);
+							languageElement.data('linkedTo', newData);
+						}
+						if(experienceElement.data('linkedTo'))
+						{
+							experienceElement.data('linkedTo').push(languageID);
+						}
+						else
+						{
+							var newData = new Array(languageID);
+							experienceElement.data('linkedTo', newData);
+						}
+					}
+				});
 			}
 			
 			$(document).ready(function()
@@ -92,25 +185,45 @@
 				var expanders = $('.expander');
 				expanders.each(function()
 				{
-					$('.ui-widget-content', $(this).parent()).toggle();
+					var element = $(this).parent();
+					var elementID = element.attr('id');
+					$('.ui-widget-content', element).toggle();
 					$(this).click(function()
 					{
-						switch( $(this).parent().data('state') )
+						switch( element.data('state') )
 						{
 							case 'allEyes':
-								allToMini(); // TODO
+								var elements = new Array(elementID);
+								if(elementID.match(/language/))
+								{
+									$('[id^=experience_]').each(function()
+									{
+										elements.push($(this).attr('id'));
+									});
+								}
+								else
+								{
+									$('[id^=language_]').each(function()
+									{
+										elements.push($(this).attr('id'));
+									});
+								}
+								manyToMini(elements);
 								break;
 							case 'background':
 							case 'mini':
 							case 'referred':
 							default:
-								toAllEyes($(this).parent()); // TODO
+								toAllEyes(element);
 								break;
 						}
 					});
 				});
+				getLinkInfo();
 			});
 		</script>
+		<link rel="stylesheet" type="text/css" href="http://www.webputty.net/css/agtzfmNzc2ZpZGRsZXIMCxIEUGFnZRjVuysM" />
+		<script type="text/javascript">(function(w,d){if(w.location!=w.parent.location||w.location.search.indexOf('__preview_css__')>-1){var t=d.createElement('script');t.type='text/javascript';t.async=true;t.src='http://www.webputty.net/js/agtzfmNzc2ZpZGRsZXIMCxIEUGFnZRjVuysM';(d.body||d.documentElement).appendChild(t);}})(window,document);</script>
 	</head>
 	<body>
 		<div id="header">
