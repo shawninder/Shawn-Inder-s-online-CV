@@ -59,38 +59,43 @@
 						$('.expander-icon', elementObject).toggleClass("ui-icon-plusthick")
 																							.toggleClass("ui-icon-minusthick");
 						break;
+					case 'referred':
+						$('.linkDescription:visible', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
 					case 'background':
 					case 'mini':
-					case 'referred':
 					default:
 						break;
 				}
 				elementObject.data('state', 'mini');
 			}
 			
-			function manyToReferred(elements)
+			function manyToReferred(elements, referredBy)
 			{
 				var nbElements = elements.length;
 				for(var i = 0; i < nbElements; ++i)
 				{
-					toReferred(elements[i]);
+					toReferred(elements[i], referredBy);
 				}
 			}
-			function toReferred(element)
+			function toReferred(element, referredBy)
 			{
 				elementObject = $('#' + element);
 				switch( elementObject.data('state') )
 				{
 					case 'allEyes':
-						$('.ui-widget-content', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
-						$('.expander-icon', elementObject).toggleClass("ui-icon-plusthick")
-																							.toggleClass("ui-icon-minusthick");
-					case 'mini':
-						elementObject.effect('highlight');
-						break;
-					case 'background':
 					case 'referred':
+						toMini(element);
+					case 'background':
+					case 'mini':
 					default:
+						if(referredBy.match(/language/))
+						{
+							$('#languageDescription_' + referredBy, elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
+						}
+						else
+						{
+							$('#experienceDescription_' + referredBy, elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
+						}
 						break;
 				}
 				elementObject.data('state', 'referred');
@@ -115,7 +120,7 @@
 				var links = element.data('linkedTo');
 				if(links)
 				{
-					manyToReferred(links);
+					manyToReferred(links, element.attr('id'));
 				}
 				
 				// Done
@@ -137,11 +142,12 @@
 						var languageID = "language_" + language;
 						var experience = data[i].experience;
 						var experienceID = "experience_" + experience;
-						var description = "<div class=\"linkDescription\">" + data[i].description + "</div>";
+						var languageDescription = "<div id=\"languageDescription_" + languageID + "\" class=\"linkDescription\">" + data[i].description + "</div>";
+						var experienceDescription = "<div id=\"experienceDescription_" + experienceID + "\" class=\"linkDescription\">" + data[i].description + "</div>";
 						var languageElement = $('#' + languageID);
 						var experienceElement = $('#' + experienceID);
-						languageElement.append(description);
-						experienceElement.append(description);
+						$('.ui-widget-content', languageElement).after(experienceDescription);
+						$('.ui-widget-content', experienceElement).after(languageDescription);
 						
 						if(languageElement.data('linkedTo'))
 						{
@@ -152,6 +158,7 @@
 							var newData = new Array(experienceID);
 							languageElement.data('linkedTo', newData);
 						}
+						
 						if(experienceElement.data('linkedTo'))
 						{
 							experienceElement.data('linkedTo').push(languageID);
@@ -162,6 +169,7 @@
 							experienceElement.data('linkedTo', newData);
 						}
 					}
+					$('.linkDescription').toggle();
 				});
 			}
 			
@@ -181,7 +189,7 @@
 						after: onAfter
 					});
 				});
-				
+
 				var expanders = $('.expander');
 				expanders.each(function()
 				{
