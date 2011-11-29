@@ -41,14 +41,6 @@
 				}
 			}
 			
-			function manyToMini(elements)
-			{
-				var nbElements = elements.length;
-				for(var i = 0; i < nbElements; ++i)
-				{
-					toMini(elements[i]);
-				}
-			}
 			function toMini(element)
 			{
 				elementObject = $('#' + element);
@@ -62,6 +54,8 @@
 					case 'referred':
 						$('.linkDescription:visible', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
 					case 'background':
+						//TODO
+						break;
 					case 'mini':
 					default:
 						break;
@@ -69,14 +63,25 @@
 				elementObject.data('state', 'mini');
 			}
 			
-			function manyToReferred(elements, referredBy)
+			function manyToMini(elements)
 			{
 				var nbElements = elements.length;
 				for(var i = 0; i < nbElements; ++i)
 				{
-					toReferred(elements[i], referredBy);
+					toMini(elements[i]);
 				}
 			}
+			
+			function allToMini()
+			{
+				var elements = new Array();
+				$('.stateful').each(function()
+				{
+					elements.push($(this).attr('id'));
+				});
+				manyToMini(elements);
+			}
+			
 			function toReferred(element, referredBy)
 			{
 				elementObject = $('#' + element);
@@ -84,8 +89,8 @@
 				{
 					case 'allEyes':
 					case 'referred':
-						toMini(element);
 					case 'background':
+						toMini(element);
 					case 'mini':
 					default:
 						if(referredBy.match(/language/))
@@ -101,22 +106,25 @@
 				elementObject.data('state', 'referred');
 			}
 			
+			function manyToReferred(elements, referredBy)
+			{
+				var nbElements = elements.length;
+				for(var i = 0; i < nbElements; ++i)
+				{
+					toReferred(elements[i], referredBy);
+				}
+			}
+			
 			function toAllEyes(element)
 			{
-				// Minimize all elements
-				var elements = new Array();
-				$('[id^=experience_]').add($('[id^=language_]')).each(function()
-				{
-					elements.push($(this).attr('id'));
-				});
-				
-				manyToMini(elements);
+				allToMini();
 				
 				// Make this element allEyes
 				$('.ui-widget-content', element).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
 				$('.expander-icon', element).toggleClass("ui-icon-plusthick")
 																		.toggleClass("ui-icon-minusthick");
 
+				// Make linked elements 'referred'
 				var links = element.data('linkedTo');
 				if(links)
 				{
@@ -201,22 +209,7 @@
 						switch( element.data('state') )
 						{
 							case 'allEyes':
-								var elements = new Array(elementID);
-								if(elementID.match(/language/))
-								{
-									$('[id^=experience_]').each(function()
-									{
-										elements.push($(this).attr('id'));
-									});
-								}
-								else
-								{
-									$('[id^=language_]').each(function()
-									{
-										elements.push($(this).attr('id'));
-									});
-								}
-								manyToMini(elements);
+								allToMini();
 								break;
 							case 'background':
 							case 'mini':
