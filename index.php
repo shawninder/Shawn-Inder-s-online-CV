@@ -201,16 +201,6 @@
 						after: onAfter
 					});
 				});*/
-				$('.slideshow').each(function() {
-					var slideshow = $(this);
-					var parent = slideshow.parent();
-					var slides = slideshow.children();
-					var nbSlides = slides.length;
-					if(nbSlides > 1)
-					{
-						log(nbSlides);
-					}
-				});
 
 				/*var expanders = $('.expander');
 				expanders.each(function()
