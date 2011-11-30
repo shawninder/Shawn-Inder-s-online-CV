@@ -28,10 +28,10 @@
 		<script type="text/javascript" src="js/jquery.easing.3.1.js"></script>
 		<script type="text/javascript" src="js/jquery.cycle.all.latest.js"></script>
 		<script type="text/javascript">
-			/*function log() {
+			function log() {
 				window.console && console.log && console.log('[log] ' + Array.prototype.join.call(arguments,' '));
 			}
-			function adjustPrevNextButtons(isNext, zeroBasedSlideIndex, slideElement)
+			/*function adjustPrevNextButtons(isNext, zeroBasedSlideIndex, slideElement)
 			{
 				$('.current', $(slideElement).parent().parent()).text(zeroBasedSlideIndex + 1);
 			}
@@ -42,9 +42,9 @@
 					$('.prev', $(currSlideElement).parent().parent()).removeClass("ui-helper-hidden-accessible");
 					$('.next', $(currSlideElement).parent().parent()).removeClass("ui-helper-hidden-accessible");
 				}
-			}
+			}*/
 			
-			function toMini(element)
+			/*function toMini(element)
 			{
 				elementObject = $('#' + element);
 				switch( elementObject.data('state') )
@@ -184,10 +184,10 @@
 					$('.linkDescription').toggle();
 				});
 			}
-			
+			*/
 			$(document).ready(function()
 			{
-				$('.slideshow').each(function() {
+				/*$('.slideshow').each(function() {
 					var parent = $(this).parent();
 					$(this).cycle({
 						fx: 'scrollHorz',
@@ -196,12 +196,23 @@
 						next: $('.next', parent),
 						timeout: 0,
 						nowrap: 1,
+						containerResize: 0,
 						onPrevNextEvent: adjustPrevNextButtons,
 						after: onAfter
 					});
+				});*/
+				$('.slideshow').each(function() {
+					var slideshow = $(this);
+					var parent = slideshow.parent();
+					var slides = slideshow.children();
+					var nbSlides = slides.length;
+					if(nbSlides > 1)
+					{
+						log(nbSlides);
+					}
 				});
 
-				var expanders = $('.expander');
+				/*var expanders = $('.expander');
 				expanders.each(function()
 				{
 					var element = $(this).parent();
@@ -223,8 +234,8 @@
 						}
 					});
 				});
-				getLinkInfo();
-			});*/
+				getLinkInfo();*/
+			});
 		</script>
 	</head>
 	<body>
@@ -313,7 +324,7 @@
 								// Images
 								if($nbImages > 0)
 								{
-									echo("	<ul class=\"slideshow\">");
+									echo("	<ul class=\"slideshow pictureList\">");
 									while($image = mysql_fetch_array($images))
 									{
 										echo("	<li><img class=\"profilePicture\" src=\"" . $image['src'] . "\" alt=\"" . $image['description'] . "\" /></li>");
@@ -332,7 +343,7 @@
 									{
 										echo("	<li>
 															<q>" . $referral['excerpt'] . "</q>
-															 - " . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "
+															<span class=\"signature\"> - " . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "</span>
 														</li>");
 									}
 									echo("	</ul>");
@@ -377,12 +388,14 @@
 							while($skill = mysql_fetch_array($skills))
 							{
 								echo("<li id=\"skill_" . $skill['id'] . "\" class=\"skill\">
-												<h3 class=\"header\" title=\"" . $skill['name'] . "\">");
-								echo(($skill['shortName'] != "")?$skill['shortName']:$skill['name']);
-								echo("		<span class=\"stars\">" . addEvaluation($skill['stars'], $skill['selfEvaluation']) . "</span>
+												<h3 class=\"header\" title=\"" . $skill['name'] . "\">
+													<span class=\"skillName\">");
+								echo(				($skill['shortName'] != "")?$skill['shortName']:$skill['name']);
+								echo("		</span>
+													<span class=\"stars\">" . addEvaluation($skill['stars'], $skill['selfEvaluation']) . "</span>
 													<div style=\"clear: both;\"></div>
 												</h3>
-												<div class=\"allEyesOnly\">" . $skill['history'] . "</div>
+												<div class=\"allEyesOnly\"><p>" . $skill['history'] . "</p></div>
 											</li>");
 							}
 						?>
