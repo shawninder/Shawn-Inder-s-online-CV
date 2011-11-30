@@ -39,6 +39,24 @@ h3
 	padding: .5em;
 }
 
+#experiences .resetter
+{
+}
+
+#skills .resetter
+{
+}
+
+.experience .allEyesOnly, .language .linkDescription
+{
+
+}
+
+.language .allEyesOnly, .experience .linkDescription
+{
+
+}
+
 .linkDescription
 {
 	padding: .5em;
