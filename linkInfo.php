@@ -2,20 +2,20 @@
 	include("DB.php");
 	$jsonStr = "[";
 	$sql_getLinkInfo = "SELECT
-												language,
-												experience,
+												skill,
+												job,
 												description
 											FROM
-												language_experience_matrix
+												job_skill_matrix
 											ORDER BY
-												language,
-												experience";
+												skill,
+												job";
 	$results = mysql_query($sql_getLinkInfo);
 	while($result = mysql_fetch_array($results))
 	{
 		$jsonStr .= ("{
-										\"language\":\"" . $result['language'] . "\",
-										\"experience\":\"" . $result['experience'] . "\",
+										\"skill\":\"" . $result['skill'] . "\",
+										\"job\":\"" . $result['job'] . "\",
 										\"description\":\"" . $result['description'] . "\"
 									}, ");
 	}

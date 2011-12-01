@@ -66,15 +66,15 @@
 				}*/
 			}
 			
-			/*function toMini(element)
+			function toMini(element)
 			{
 				elementObject = $('#' + element);
 				switch( elementObject.data('state') )
 				{
 					case 'allEyes':
-						$('.ui-widget-content', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
-						$('.expander-icon', elementObject).toggleClass("ui-icon-plusthick")
-																							.toggleClass("ui-icon-minusthick");
+						$('.allEyesOnly', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
+						/*$('.expander-icon', elementObject).toggleClass("ui-icon-plusthick")
+																							.toggleClass("ui-icon-minusthick");*/
 						break;
 					case 'referred':
 						$('.linkDescription:visible', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
@@ -100,7 +100,7 @@
 			function allToMini()
 			{
 				var elements = new Array();
-				$('.stateful').each(function()
+				$('.job').add($('.skill')).each(function()
 				{
 					elements.push($(this).attr('id'));
 				});
@@ -145,10 +145,9 @@
 				allToMini();
 				
 				// Make this element allEyes
-				$('.ui-widget-content', element).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
-				$('.expander-icon', element).toggleClass("ui-icon-plusthick")
-																		.toggleClass("ui-icon-minusthick");
-				log(element.attr('style'));
+				$('.allEyesOnly', element).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
+				/*$('.expander-icon', element).toggleClass("ui-icon-plusthick")
+																		.toggleClass("ui-icon-minusthick");*/
 
 				// Make linked elements 'referred'
 				var links = element.data('linkedTo');
@@ -180,8 +179,8 @@
 						var jobDescription = "<div id=\"jobDescription_" + jobID + "\" class=\"linkDescription\">" + data[i].description + "</div>";
 						var skillElement = $('#' + skillID);
 						var jobElement = $('#' + jobID);
-						$('.ui-widget-content', skillElement).after(jobDescription);
-						$('.ui-widget-content', jobElement).after(skillDescription);
+						$('.allEyesOnly', skillElement).after(jobDescription);
+						$('.allEyesOnly', jobElement).after(skillDescription);
 						
 						if(skillElement.data('linkedTo'))
 						{
@@ -206,7 +205,7 @@
 					$('.linkDescription').toggle();
 				});
 			}
-			*/
+
 			$(document).ready(function()
 			{
 				$('.slideshow').each(function() {
@@ -227,12 +226,12 @@
 					});
 				});
 
-				/*var expanders = $('.expander');
+				var expanders = $('.job .header').add($('.skill .header'));
 				expanders.each(function()
 				{
 					var element = $(this).parent();
 					var elementID = element.attr('id');
-					$('.ui-widget-content', element).toggle();
+					$('.allEyesOnly', element).toggle();
 					$(this).click(function()
 					{
 						switch( element.data('state') )
@@ -249,7 +248,7 @@
 						}
 					});
 				});
-				getLinkInfo();*/
+				getLinkInfo();
 			});
 		</script>
 	</head>
