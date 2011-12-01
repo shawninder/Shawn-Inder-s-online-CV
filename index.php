@@ -31,18 +31,40 @@
 			function log() {
 				window.console && console.log && console.log('[log] ' + Array.prototype.join.call(arguments,' '));
 			}
-			/*function adjustPrevNextButtons(isNext, zeroBasedSlideIndex, slideElement)
+			
+			// TODO: I shouldn't need resizeSlideshow, cycle should take care of this. Is this a problem in my code or a corner case cycle should know about?
+			function resizeSlideshow(currSlideElement, nextSlideElement, ifBigger)
 			{
-				$('.current', $(slideElement).parent().parent()).text(zeroBasedSlideIndex + 1);
+				var curr = $(currSlideElement);
+				var next = $(nextSlideElement);
+				if(curr && next)
+				{
+					var nextH = next.height();
+					var currH = curr.height();
+					if(((nextH > currH) && ifBigger) || ((nextH < currH) && !ifBigger))
+					{
+						next.parent().animate(
+							{
+								height: nextH
+							},
+							'fast',
+							'easeInOutCirc');
+					}
+				}
+			}
+			function onBefore(currSlideElement, nextSlideElement, options, forwardFlag)
+			{
+				resizeSlideshow(currSlideElement, nextSlideElement, 1);
 			}
 			function onAfter(currSlideElement, nextSlideElement, options, forwardFlag)
 			{
-				if(options.slideCount > 1)
+				resizeSlideshow(currSlideElement, nextSlideElement, 0);
+				/*if(options.slideCount > 1)
 				{
 					$('.prev', $(currSlideElement).parent().parent()).removeClass("ui-helper-hidden-accessible");
 					$('.next', $(currSlideElement).parent().parent()).removeClass("ui-helper-hidden-accessible");
-				}
-			}*/
+				}*/
+			}
 			
 			/*function toMini(element)
 			{
@@ -187,20 +209,23 @@
 			*/
 			$(document).ready(function()
 			{
-				/*$('.slideshow').each(function() {
-					var parent = $(this).parent();
-					$(this).cycle({
+				$('.slideshow').each(function() {
+					var slideshow = $(this);
+					var parent = slideshow.parent();
+					if(slideshow.hasClass('referralList'))
+					{
+						slideshow.height($(slideshow.children().get()[0]).height());
+					}
+					slideshow.cycle({
 						fx: 'scrollHorz',
 						easing: 'easeInOutCirc',
+						/*timeout: 0,
 						prev: $('.prev', parent),
-						next: $('.next', parent),
-						timeout: 0,
-						nowrap: 1,
-						containerResize: 0,
-						onPrevNextEvent: adjustPrevNextButtons,
+						next: $('.next', parent),*/
+						before: onBefore,
 						after: onAfter
 					});
-				});*/
+				});
 
 				/*var expanders = $('.expander');
 				expanders.each(function()
@@ -328,7 +353,7 @@
 								// Referrals
 								if($nbReferrals > 0)
 								{
-									echo("	<ul class=\"slideshow\">");
+									echo("	<ul class=\"slideshow referralList\">");
 									while($referral = mysql_fetch_array($referrals))
 									{
 										echo("	<li>
