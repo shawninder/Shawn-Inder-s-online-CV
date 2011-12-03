@@ -76,6 +76,9 @@
 						$('.allEyesOnly', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
 						/*$('.expander-icon', elementObject).toggleClass("ui-icon-plusthick")
 																							.toggleClass("ui-icon-minusthick");*/
+						var otherColumn = elementObject.attr('id').match(/skill/)?$('#jobList'):$('#skillList');
+						var otherColumn = $('ul', otherColumn);
+						otherColumn.css({position: 'relative', top: 0});	// TODO: Why do I need position:relative here, it's in the css + Animate this!
 						break;
 					case 'referred':
 						$('.linkDescription:visible', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
