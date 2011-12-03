@@ -14,7 +14,8 @@
 			include("DB.php");
 			function addEvaluation($nbStars, $description)
 			{
-				return("<img src=\"images/rated_" . $nbStars . ".png\" alt=\"" . $nbStars . " stars: " . $description . "\" title=\"" . $description . "\" />");
+				$nb = ($nbStars)?$nbStars:0;
+				return("<img src=\"images/stars_" . $nb . ".png\" alt=\"" . $nbStars . " stars: " . $description . "\" title=\"" . $description . "\" />");
 			}
 		?>
 
@@ -142,6 +143,7 @@
 			
 			function toAllEyes(element)
 			{
+				var elementID = element.attr('id');
 				allToMini();
 				
 				// Make this element allEyes
@@ -153,8 +155,15 @@
 				var links = element.data('linkedTo');
 				if(links)
 				{
-					manyToReferred(links, element.attr('id'));
+					manyToReferred(links, elementID);
 				}
+				
+				// TODO: Hide non-linked elements
+				
+				// TODO: Top-align other column with this entry
+				var otherColumn = elementID.match(/skill/)?$('#jobList'):$('#skillList');
+				var otherColumn = $('ul', otherColumn);
+				otherColumn.css({position: 'relative', top: element.position().top});	// TODO: Why do I need position:relative here, it's in the css
 				
 				// Done
 				element.data('state', 'allEyes');
@@ -175,8 +184,8 @@
 						var skillID = "skill_" + skill;
 						var job = data[i].job;
 						var jobID = "job_" + job;
-						var skillDescription = "<div id=\"skillDescription_" + skillID + "\" class=\"linkDescription\">" + data[i].description + "</div>";
-						var jobDescription = "<div id=\"jobDescription_" + jobID + "\" class=\"linkDescription\">" + data[i].description + "</div>";
+						var skillDescription = "<p id=\"skillDescription_" + skillID + "\" class=\"linkDescription\">" + data[i].description + "</p>";
+						var jobDescription = "<p id=\"jobDescription_" + jobID + "\" class=\"linkDescription\">" + data[i].description + "</p>";
 						var skillElement = $('#' + skillID);
 						var jobElement = $('#' + jobID);
 						$('.allEyesOnly', skillElement).after(jobDescription);
