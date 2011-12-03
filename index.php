@@ -60,11 +60,24 @@
 			function onAfter(currSlideElement, nextSlideElement, options, forwardFlag)
 			{
 				resizeSlideshow(currSlideElement, nextSlideElement, 0);
-				/*if(options.slideCount > 1)
+				
+				var index = options.currSlide;
+				if(index == 0)
 				{
-					$('.prev', $(currSlideElement).parent().parent()).removeClass("ui-helper-hidden-accessible");
-					$('.next', $(currSlideElement).parent().parent()).removeClass("ui-helper-hidden-accessible");
-				}*/
+					$('.prev', $(currSlideElement).parent().parent()).addClass("hidden-accessible");
+				}
+				else
+				{
+					$('.prev', $(currSlideElement).parent().parent()).removeClass("hidden-accessible");
+				}
+				if(index == options.slideCount - 1)
+				{
+					$('.next', $(currSlideElement).parent().parent()).addClass("hidden-accessible");
+				}
+				else
+				{
+					$('.next', $(currSlideElement).parent().parent()).removeClass("hidden-accessible");
+				}
 			}
 			
 			function toMini(element)
@@ -222,6 +235,12 @@
 			{
 				$('.slideshow').each(function() {
 					var slideshow = $(this);
+					var nbSlides = slideshow.children().length;
+					if(nbSlides > 1)
+					{
+						$('.prev', slideshow.parent()).removeClass("hidden-accessible");
+						$('.next', slideshow.parent()).removeClass("hidden-accessible");
+					}
 					var parent = slideshow.parent();
 					if(slideshow.hasClass('referralList'))
 					{
@@ -230,9 +249,10 @@
 					slideshow.cycle({
 						fx: 'scrollHorz',
 						easing: 'easeInOutCirc',
-						/*timeout: 0,
+						timeout: 0,
+						nowrap: 1,
 						prev: $('.prev', parent),
-						next: $('.next', parent),*/
+						next: $('.next', parent),
 						before: onBefore,
 						after: onAfter
 					});
@@ -275,9 +295,13 @@
 			<li><a>Download CV</a></li>
 		</ul>
 		
-		<!--<ul class="slideshow">
-			<li><img class="PortraitPicture" src="images/shawn.jpg" alt="A picture of Shawn Inder" /></li>
-		</ul>-->
+		<!--<div class=\"slideshowWrapper\">
+			<span class=\"prev hidden-accessible\"><img src=\"images/prev.png\" alt=\"Previous\" /></span>
+			<ul class="slideshow">
+				<li><img class="PortraitPicture" src="images/shawn.jpg" alt="A picture of Shawn Inder" /></li>
+			</ul>
+			<img class=\"next hidden-accessible\" src=\"images/next.png\" alt=\"Next\" />
+		</div>-->
 
 		<div id="interactiveCV">
 			<div id="CVcontainer">
@@ -350,12 +374,20 @@
 								// Images
 								if($nbImages > 0)
 								{
-									echo("	<ul class=\"slideshow pictureList\">");
+									echo("	<div class=\"slideshowWrapper\">
+														<span class=\"prev hidden-accessible\">
+															<img src=\"images/prev.png\" alt=\"Previous\" />
+														</span>
+														<ul class=\"slideshow pictureList\">");
 									while($image = mysql_fetch_array($images))
 									{
-										echo("	<li><img class=\"profilePicture\" src=\"" . $image['src'] . "\" alt=\"" . $image['description'] . "\" /></li>");
+										echo("		<li><img class=\"profilePicture\" src=\"" . $image['src'] . "\" alt=\"" . $image['description'] . "\" /></li>");
 									}
-									echo("	</ul>");
+									echo("		</ul>
+														<span class=\"next hidden-accessible\">
+															<img src=\"images/next.png\" alt=\"Next\" />
+														</span>
+													</div>");
 								}
 													
 								// Job description
@@ -364,15 +396,23 @@
 								// Referrals
 								if($nbReferrals > 0)
 								{
-									echo("	<ul class=\"slideshow referralList\">");
+									echo("	<div class=\"slideshowWrapper\">
+														<span class=\"prev hidden-accessible\">
+															<img src=\"images/prev.png\" alt=\"Previous\" />
+														</span>
+														<ul class=\"slideshow referralList\">");
 									while($referral = mysql_fetch_array($referrals))
 									{
-										echo("	<li>
-															<q>" . $referral['excerpt'] . "</q>
-															<span class=\"signature\"> - " . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "</span>
-														</li>");
+										echo("		<li>
+																<q>" . $referral['excerpt'] . "</q>
+																<span class=\"signature\"> - " . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "</span>
+															</li>");
 									}
-									echo("	</ul>");
+									echo("		</ul>
+														<span class=\"next hidden-accessible\">
+															<img src=\"images/next.png\" alt=\"Next\" />
+														</span>
+													</div>");
 								}
 								
 								// Links
