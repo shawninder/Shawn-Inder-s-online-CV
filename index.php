@@ -80,23 +80,48 @@
 				}
 			}
 			
+			function crumbs(column, text)
+			{
+				if(!column)
+				{
+					crumbs('Job');
+					crumbs('Skill');
+				}
+				else
+				{
+					var breadcrumbs = $('.breadcrumbs', $('#' + column.toLowerCase() + 'List'));
+					if(!text)
+					{
+						// Back to default
+						breadcrumbs.text(column + "s");
+					}
+					else
+					{
+						breadcrumbs.html('<a onclick="allToMini();">' + column + 's</a> >> ' + text);					
+					}
+				}
+			}
+			
 			function toMini(element)
 			{
 				elementObject = $('#' + element);
 				switch( elementObject.data('state') )
 				{
 					case 'allEyes':
-						$('.allEyesOnly', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
+						$('.allEyesOnly', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal", function()
+						{
+							$('#' + element).removeClass('allEyes');
+						});
+						crumbs();
 						/*$('.expander-icon', elementObject).toggleClass("ui-icon-plusthick")
 																							.toggleClass("ui-icon-minusthick");*/
-						var otherColumn = elementObject.attr('id').match(/skill/)?$('#jobList'):$('#skillList');
-						var otherColumn = $('ul', otherColumn);
-						otherColumn.css({position: 'relative', top: 0});	// TODO: Why do I need position:relative here, it's in the css + Animate this!
 						break;
 					case 'referred':
+						elementObject.removeClass('referred');
 						$('.linkDescription:visible', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
+							break;
 					case 'background':
-						//TODO
+						elementObject.toggle();
 						break;
 					case 'mini':
 					default:
@@ -135,6 +160,7 @@
 						toMini(element);
 					case 'mini':
 					default:
+						elementObject.addClass('referred');
 						if(referredBy.match(/skill/))
 						{
 							$('#skillDescription_' + referredBy, elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
@@ -157,12 +183,65 @@
 				}
 			}
 			
+			function toBackground(element)
+			{
+				element.toggle();
+				element.data('state','background');
+			}
+			
+			function toBackgroundBut(exceptions, referredBy)
+			{
+				var elements;
+				if(referredBy.match(/skill/))
+				{
+					var elements = $('ul', $('#jobList')).children();
+				}
+				else
+				{
+					var elements = $('ul', $('#skillList')).children();
+				}
+				var nbExceptions = exceptions.length;
+				elements.each(function()
+				{
+					var found = false;
+					for(var i = 0; !found && (i < nbExceptions); ++i)
+					{
+						if(exceptions[i] == $(this).attr('id'))
+						{
+							found = true;
+						}
+					}
+					if(!found)
+					{
+						toBackground($(this));
+					}
+				});
+			}
+			
+			function allToBackground(referredBy)
+			{
+				var elements;
+				if(referredBy.match(/skill/))
+				{
+					var elements = $('ul', $('#jobList')).children();
+				}
+				else
+				{
+					var elements = $('ul', $('#skillList')).children();
+				}
+				elements.each(function()
+				{
+					toBackground($(this));
+				});
+			}
+			
 			function toAllEyes(element)
 			{
 				var elementID = element.attr('id');
 				allToMini();
 				
 				// Make this element allEyes
+				element.addClass('allEyes');
 				$('.allEyesOnly', element).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
 				/*$('.expander-icon', element).toggleClass("ui-icon-plusthick")
 																		.toggleClass("ui-icon-minusthick");*/
@@ -174,12 +253,27 @@
 					manyToReferred(links, elementID);
 				}
 				
-				// TODO: Hide non-linked elements
+				if(links)
+				{
+					toBackgroundBut(links, elementID);
+				}
+				else
+				{
+					allToBackground(elementID);
+				}
 				
-				// TODO: Top-align other column with this entry
-				var otherColumn = elementID.match(/skill/)?$('#jobList'):$('#skillList');
-				var otherColumn = $('ul', otherColumn);
-				otherColumn.css({position: 'relative', top: element.position().top});	// TODO: Why do I need position:relative here, it's in the css
+				if(elementID.match(/skill/))
+				{
+					var text = $('.skillName', element).text();
+					crumbs('Skill', text);
+					crumbs('Job', 'perfecting ' + text);
+				}
+				else
+				{
+					var text = $('.position', element).text();
+					crumbs('Job', text);
+					crumbs('Skill', 'perfected as ' + text);
+				}
 				
 				// Done
 				element.data('state', 'allEyes');
@@ -368,7 +462,7 @@
 								$nbLinks = $links?mysql_num_rows($links):0;
 								
 								echo("<li id=\"job_" . $job['jID'] . "\" class=\"job\">
-												<h3 class=\"header\">" . $job['jTitle'] . " <span class=\"dates\">(" . $job['jStartDate'] . " » " . $endDate . ")</span><div style=\"clear: both;\"></div></h3>
+												<h3 class=\"header\"><span class=\"position\">" . $job['jTitle'] . "</span> <span class=\"dates\">(" . $job['jStartDate'] . " » " . $endDate . ")</span><div style=\"clear: both;\"></div></h3>
 												<div class=\"allEyesOnly\">");
 
 								// Images
