@@ -97,186 +97,193 @@
 					}
 					else
 					{
-						breadcrumbs.html('<a onclick="allToMini();">' + column + 's</a> >> ' + text);					
+						breadcrumbs.html('<a onclick="allEyesOff($(\'.allEyes\'));">' + column + 's</a> >> ' + text);					
 					}
 				}
 			}
 			
-			function toMini(element)
+
+			function getOthers(element)
 			{
-				elementObject = $('#' + element);
-				switch( elementObject.data('state') )
-				{
-					case 'allEyes':
-						$('.allEyesOnly', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal", function()
-						{
-							$('#' + element).removeClass('allEyes');
-						});
-						crumbs();
-						/*$('.expander-icon', elementObject).toggleClass("ui-icon-plusthick")
-																							.toggleClass("ui-icon-minusthick");*/
-						break;
-					case 'referred':
-						elementObject.removeClass('referred');
-						$('.linkDescription:visible', elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
-							break;
-					case 'background':
-						elementObject.toggle();
-						break;
-					case 'mini':
-					default:
-						break;
-				}
-				elementObject.data('state', 'mini');
-			}
-			
-			function manyToMini(elements)
-			{
-				var nbElements = elements.length;
-				for(var i = 0; i < nbElements; ++i)
-				{
-					toMini(elements[i]);
-				}
-			}
-			
-			function allToMini()
-			{
-				var elements = new Array();
-				$('.job').add($('.skill')).each(function()
-				{
-					elements.push($(this).attr('id'));
-				});
-				manyToMini(elements);
-			}
-			
-			function toReferred(element, referredBy)
-			{
-				elementObject = $('#' + element);
-				switch( elementObject.data('state') )
-				{
-					case 'allEyes':
-					case 'referred':
-					case 'background':
-						toMini(element);
-					case 'mini':
-					default:
-						elementObject.addClass('referred');
-						if(referredBy.match(/skill/))
-						{
-							$('#skillDescription_' + referredBy, elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
-						}
-						else
-						{
-							$('#jobDescription_' + referredBy, elementObject).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
-						}
-						break;
-				}
-				elementObject.data('state', 'referred');
-			}
-			
-			function manyToReferred(elements, referredBy)
-			{
-				var nbElements = elements.length;
-				for(var i = 0; i < nbElements; ++i)
-				{
-					toReferred(elements[i], referredBy);
-				}
-			}
-			
-			function toBackground(element)
-			{
-				element.toggle();
-				element.data('state','background');
-			}
-			
-			function toBackgroundBut(exceptions, referredBy)
-			{
-				var elements;
-				if(referredBy.match(/skill/))
-				{
-					var elements = $('ul', $('#jobList')).children();
-				}
-				else
-				{
-					var elements = $('ul', $('#skillList')).children();
-				}
-				var nbExceptions = exceptions.length;
+				var supportingIDs = element.data('linkedTo'), nbSupportingIDs = supportingIDs.length;
+
+				var elements = (element.attr('id').match(/skill/))?$('ul', $('#jobList')).children():$('ul', $('#skillList')).children();
+				
+				var supportingElements, nonSupportingElements;
+
 				elements.each(function()
 				{
+					var self = $(this);
 					var found = false;
-					for(var i = 0; !found && (i < nbExceptions); ++i)
+					for(var i = 0; !found && (i < nbSupportingIDs); ++i)
 					{
-						if(exceptions[i] == $(this).attr('id'))
+						if(supportingIDs[i] == self.attr('id'))
 						{
 							found = true;
 						}
 					}
-					if(!found)
+					if(found)
 					{
-						toBackground($(this));
+						supportingElements = (supportingElements)?supportingElements.add(self):self;
+					}
+					else
+					{
+						nonSupportingElements = (nonSupportingElements)?nonSupportingElements.add(self):self;
 					}
 				});
+				return ({supporting: supportingElements, nonSupporting: nonSupportingElements});
 			}
 			
-			function allToBackground(referredBy)
+			function allSupportsToMini()
 			{
-				var elements;
-				if(referredBy.match(/skill/))
+				return $('.supportParagraph:visible').toggle("blind", {"easing":"easeInOutCirc"}, "normal", function()
 				{
-					var elements = $('ul', $('#jobList')).children();
-				}
-				else
-				{
-					var elements = $('ul', $('#skillList')).children();
-				}
-				elements.each(function()
-				{
-					toBackground($(this));
+					$(this).parent().removeClass('support');
+					$(this).data('state', 'mini');
 				});
 			}
 			
-			function toAllEyes(element)
+			function allBackgroundsToMini()
 			{
-				var elementID = element.attr('id');
-				allToMini();
-				
-				// Make this element allEyes
-				element.addClass('allEyes');
-				$('.allEyesOnly', element).toggle("blind", {"easing":"easeInOutCirc"}, "normal");
-				/*$('.expander-icon', element).toggleClass("ui-icon-plusthick")
-																		.toggleClass("ui-icon-minusthick");*/
-
-				// Make linked elements 'referred'
-				var links = element.data('linkedTo');
-				if(links)
+				return $('.background').toggle("blind", {"easing":"easeInOutCirc"}, "slow", function()
 				{
-					manyToReferred(links, elementID);
-				}
-				
-				if(links)
+					$(this).removeClass('background').data('state', 'mini');
+				});
+			}
+			
+			function toggleAllEyes(element)
+			{
+				return $('.allEyesOnly', element).toggle("blind", {"easing":"easeInOutCirc"}, "slow");
+			}
+			
+			function miniToBackground(elements)
+			{
+				return elements.toggle("blind", {"easing":"easeInOutCirc"}, "slow", function()
 				{
-					toBackgroundBut(links, elementID);
+					$(this).addClass('background').data('state', 'background');
+				});
+			}
+			
+			function miniToSupport(elements, supportSubject)
+			{
+				elements.addClass('support');
+				return $('.' + supportSubject, elements).toggle("blind", {"easing":"easeInOutCirc"}, "fast", function()
+				{
+					$(this).parent().data('state', 'support');
+				});
+			}
+			
+			function supportToMini(elements)
+			{
+				return $('.supportParagraph:visible', elements).toggle("blind", {"easing":"easeInOutCirc"}, "fast", function()
+				{
+					$(this).parent().removeClass('support').data('state', 'mini');
+				});
+			}
+			
+			function backgroundToMini(elements)
+			{
+				return elements.toggle("blind", {"easing":"easeInOutCirc"}, "slow", function()
+				{
+					$(this).removeClass('background').data('state', 'mini');
+				});
+			}
+			
+			function updateBreadcrumbs(allEyesElement)
+			{
+				if(allEyesElement)
+				{
+					if(allEyesElement.attr('id').match(/skill/))
+					{
+						var text = $('.skillName', allEyesElement).text();
+						crumbs('Skill', text);
+						crumbs('Job', 'perfecting ' + text);
+					}
+					else
+					{
+						var text = $('.position', allEyesElement).text();
+						crumbs('Job', text);
+						crumbs('Skill', 'perfected as ' + text);
+					}
 				}
 				else
 				{
-					allToBackground(elementID);
+					crumbs();
 				}
-				
-				if(elementID.match(/skill/))
+				return true;
+			}
+			
+			function allEyesOn(element)
+			{
+				var others = getOthers(element);
+				// Wave 1
+				$.when(
+					allEyesOff($('.allEyes'))).done(function()
 				{
-					var text = $('.skillName', element).text();
-					crumbs('Skill', text);
-					crumbs('Job', 'perfecting ' + text);
-				}
-				else
+					// Wave 2
+					$.when(
+						element.addClass('allEyes')).done(function()
+					{
+						// Wave 3
+						$.when(
+							toggleAllEyes(element),
+							miniToBackground(others.nonSupporting),
+							updateBreadcrumbs(element)).done(function()
+						{
+							// Wave 4
+							$.when(
+								miniToSupport(others.supporting, element.attr('id'))).done(function()
+							{
+								// Done
+								element.data('state', 'allEyes');
+							});
+						});
+					});
+				});
+			}
+			
+			function allEyesOff(element)
+			{
+				if(element.length != 0)
 				{
-					var text = $('.position', element).text();
-					crumbs('Job', text);
-					crumbs('Skill', 'perfected as ' + text);
+					var others = getOthers(element);
+					// Wave 1
+					$.when(
+						toggleAllEyes(element),
+						supportToMini(others.supporting),
+						updateBreadcrumbs()).done(function()
+					{
+						// Wave 2
+						$.when(
+							backgroundToMini(others.nonSupporting),
+							element.removeClass('allEyes')).done(function()
+						{
+							// Done
+							element.data('state', 'mini');
+						});
+					});
 				}
-				
-				// Done
-				element.data('state', 'allEyes');
+				return true;
+			}
+			
+			function clickOnElementHeader(element)
+			{
+				switch(element.data('state'))
+				{
+					case 'background':
+						// Background being invisible, it should be impossible to get here.
+						log("Problems afoot! How did you click on a background element?");
+						break;
+					case 'allEyes':
+						allEyesOff(element);
+						break;
+					case 'mini':
+					case 'support':
+					default:
+						// No state is assumed to be mini
+						allEyesOn(element);
+						break;
+				}
 			}
 			
 			function getLinkInfo()
@@ -286,16 +293,13 @@
 					url: "linkInfo.php"
 				}).done(function(msg)
 				{
-					var data = $.parseJSON(msg);
-					var dataLength = data.length;
+					var data = $.parseJSON(msg), dataLength = data.length;
 					for(var i = 0; i < dataLength; ++i)
 					{
-						var skill = data[i].skill;
-						var skillID = "skill_" + skill;
-						var job = data[i].job;
-						var jobID = "job_" + job;
-						var skillDescription = "<p id=\"skillDescription_" + skillID + "\" class=\"linkDescription\">" + data[i].description + "</p>";
-						var jobDescription = "<p id=\"jobDescription_" + jobID + "\" class=\"linkDescription\">" + data[i].description + "</p>";
+						var skillID = "skill_" + data[i].skill;
+						var jobID = "job_" + data[i].job;
+						var skillDescription = "<p class=\"supportParagraph " + skillID + "\">" + data[i].description + "</p>";
+						var jobDescription = "<p class=\"supportParagraph " + jobID + "\">" + data[i].description + "</p>";
 						var skillElement = $('#' + skillID);
 						var jobElement = $('#' + jobID);
 						$('.allEyesOnly', skillElement).after(jobDescription);
@@ -307,8 +311,7 @@
 						}
 						else
 						{
-							var newData = new Array(jobID);
-							skillElement.data('linkedTo', newData);
+							skillElement.data('linkedTo', new Array(jobID));
 						}
 						
 						if(jobElement.data('linkedTo'))
@@ -317,11 +320,10 @@
 						}
 						else
 						{
-							var newData = new Array(skillID);
-							jobElement.data('linkedTo', newData);
+							jobElement.data('linkedTo', new Array(skillID));
 						}
 					}
-					$('.linkDescription').toggle();
+					$('.supportParagraph').toggle();
 				});
 			}
 
@@ -352,26 +354,14 @@
 					});
 				});
 
-				var expanders = $('.job .header').add($('.skill .header'));
-				expanders.each(function()
+				$('.job .header').add($('.skill .header')).each(function()
 				{
 					var element = $(this).parent();
-					var elementID = element.attr('id');
+					// Hide allEyesOnly content
 					$('.allEyesOnly', element).toggle();
 					$(this).click(function()
 					{
-						switch( element.data('state') )
-						{
-							case 'allEyes':
-								allToMini();
-								break;
-							case 'background':
-							case 'mini':
-							case 'referred':
-							default:
-								toAllEyes(element);
-								break;
-						}
+						clickOnElementHeader(element);
 					});
 				});
 				getLinkInfo();
