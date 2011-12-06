@@ -145,7 +145,7 @@
 			
 			function allBackgroundsToMini()
 			{
-				return $('.background').toggle("blind", {"easing":"easeInOutCirc"}, "slow", function()
+				return $('.background').toggle("fade", {"easing":"easeInOutCirc"}, "slow", function()
 				{
 					$(this).removeClass('background').data('state', 'mini');
 				});
@@ -158,7 +158,7 @@
 			
 			function miniToBackground(elements)
 			{
-				return elements.toggle("blind", {"easing":"easeInOutCirc"}, "slow", function()
+				return elements.toggle("fade", {"easing":"easeInOutCirc"}, "slow", function()
 				{
 					$(this).addClass('background').data('state', 'background');
 				});
@@ -183,7 +183,7 @@
 			
 			function backgroundToMini(elements)
 			{
-				return elements.toggle("blind", {"easing":"easeInOutCirc"}, "slow", function()
+				return elements.toggle("fade", {"easing":"easeInOutCirc"}, "slow", function()
 				{
 					$(this).removeClass('background').data('state', 'mini');
 				});
