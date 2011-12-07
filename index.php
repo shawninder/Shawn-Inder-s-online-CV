@@ -31,6 +31,7 @@
 		<script type="text/javascript">
 			function log() {
 				window.console && console.log && console.log('[log] ' + Array.prototype.join.call(arguments,' '));
+				return true;
 			}
 			
 			// TODO: I shouldn't need resizeSlideshow, cycle should take care of this. Is this a problem in my code or a corner case cycle should know about?
@@ -210,12 +211,13 @@
 				{
 					crumbs();
 				}
-				return true;
 			}
 			
 			function allEyesOn(element)
 			{
+				var deferredObject = $.Deferred();
 				var others = getOthers(element);
+				var otherAllEyes = $('.allEyes');
 				// Wave 1
 				$.when(
 					allEyesOff($('.allEyes'))).done(function()
@@ -226,24 +228,32 @@
 					{
 						// Wave 3
 						$.when(
-							toggleAllEyes(element),
-							miniToBackground(others.nonSupporting),
-							updateBreadcrumbs(element)).done(function()
-						{
-							// Wave 4
-							$.when(
-								miniToSupport(others.supporting, element.attr('id'))).done(function()
+							toggleAllEyes(element)).done(function()
 							{
-								// Done
-								element.data('state', 'allEyes');
+								$.when(
+									miniToBackground(others.nonSupporting),
+									updateBreadcrumbs(element)).done(function()
+								{
+									// Wave 4
+									$.when(
+										miniToSupport(others.supporting, element.attr('id'))).done(function()
+									{
+										// Done
+										$.when(element.data('state', 'allEyes')).done(function()
+										{
+											deferredObject.resolve();
+										});
+									});
+								});
 							});
-						});
 					});
 				});
+				return deferredObject.promise();
 			}
 			
 			function allEyesOff(element)
 			{
+				var deferredObject = $.Deferred();
 				if(element.length != 0)
 				{
 					var others = getOthers(element);
@@ -259,11 +269,20 @@
 							element.removeClass('allEyes')).done(function()
 						{
 							// Done
-							element.data('state', 'mini');
+							$.when(
+								element.data('state', 'mini')).done(function()
+							{
+								deferredObject.resolve();
+							});
 						});
 					});
 				}
-				return true;
+				else
+				{
+					deferredObject.resolve();
+				}
+				
+				return deferredObject.promise();
 			}
 			
 			function clickOnElementHeader(element)
@@ -275,13 +294,27 @@
 						log("Problems afoot! How did you click on a background element?");
 						break;
 					case 'allEyes':
-						allEyesOff(element);
+						if(!window.preventAction)
+						{
+							window.preventAction = true;
+							$.when(allEyesOff(element)).done(function()
+							{
+								window.preventAction = false;
+							});
+						}
 						break;
 					case 'mini':
 					case 'support':
 					default:
 						// No state is assumed to be mini
-						allEyesOn(element);
+						if(!window.preventAction)
+						{
+							window.preventAction = true;
+							$.when(allEyesOn(element)).done(function()
+							{
+								window.preventAction = false;
+							});
+						}
 						break;
 				}
 			}
@@ -323,6 +356,7 @@
 							jobElement.data('linkedTo', new Array(skillID));
 						}
 					}
+					
 					$('.supportParagraph').toggle();
 				});
 			}
@@ -354,16 +388,22 @@
 					});
 				});
 
+				// TODO: Remove the need for this
+				window.preventAction = false;
+				
 				$('.job .header').add($('.skill .header')).each(function()
 				{
 					var element = $(this).parent();
+					
 					// Hide allEyesOnly content
 					$('.allEyesOnly', element).toggle();
+					
 					$(this).click(function()
 					{
 						clickOnElementHeader(element);
 					});
 				});
+				
 				getLinkInfo();
 			});
 		</script>
@@ -372,12 +412,6 @@
 		<div id="header">
 			<h1>iCV: <a class="emailLink" href="mailto:shawninder@gmail.com" title="Write me an e-mail">Shawn Inder</a></h1>
 		</div>
-		
-		<ul id="moreOptions">
-			<li><a>Version Française</a></li>
-			<li><a>Print current view</a></li>
-			<li><a>Download CV</a></li>
-		</ul>
 		
 		<!--<div class=\"slideshowWrapper\">
 			<span class=\"prev hidden-accessible\"><img src=\"images/prev.png\" alt=\"Previous\" /></span>
@@ -390,7 +424,7 @@
 		<div id="interactiveCV">
 			<div id="CVcontainer">
 				<div id="jobList" class="half">
-					<h2 class="breadcrumbs">Jobs</h2>
+					<h2 class="breadcrumbs jobCrumbs">Jobs</h2>
 					<ul>
 						<?php
 							$sql_getJobs = "
@@ -519,7 +553,7 @@
 					</ul>
 				</div>
 				<div id="skillList" class="half">
-					<h2 class="breadcrumbs">Skills</h2>
+					<h2 class="breadcrumbs skillCrumbs">Skills</h2>
 					<ul>
 						<?php
 							$sql_getSkills = "
@@ -547,13 +581,18 @@
 												</h3>
 												<div class=\"allEyesOnly\"><p>" . $skill['history'] . "</p></div>
 											</li>");
-							}
+						}
 						?>
 					</ul>
 				</div>
 			</div>
 		</div>
 		<div style="clear: both;"> </div>
+		<ul id="moreOptionsMenu">
+			<li><a>Version Française</a></li>
+			<li><a>Print current view</a></li>
+			<li><a>Download CV</a></li>
+		</ul>
 	</body>
 </html>
 
