@@ -8,4 +8,5 @@
 	 
 	$DB = mysql_connect($host, $username_site, $password_site) or die(mysql_error());
 	mysql_select_db("shawninder_99k_portfolio") or die(mysql_error());
+	mysql_set_charset("utf8");
 ?>
