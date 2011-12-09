@@ -52,8 +52,7 @@ function onAfter(currSlideElement, nextSlideElement, options, forwardFlag)
 
 function getOthers(element)
 {
-	var supportingIDs = element.data('linkedTo'), nbSupportingIDs = supportingIDs.length;
-
+	var supportingIDs = element.data('linkedTo'), nbSupportingIDs = (supportingIDs)?supportingIDs.length:0;
 	var elements = (element.attr('id').match(/skill/))?$('ul', $('.jobList')).children():$('ul', $('.skillList')).children();
 	
 	var supportingElements, nonSupportingElements;
@@ -105,35 +104,63 @@ function toggleAllEyes(element)
 
 function miniToBackground(elements)
 {
-	return elements.toggle("fade", {"easing":"easeInOutCirc"}, "slow", function()
+	if(elements)
 	{
-		$(this).addClass('background').data('state', 'background');
-	});
+		return elements.toggle("fade", {"easing":"easeInOutCirc"}, "slow", function()
+		{
+			$(this).addClass('background').data('state', 'background');
+		});
+	}
+	else
+	{
+		return $(this).addClass('background').data('state', 'background');
+	}
 }
 
 function miniToSupport(elements, supportSubject)
 {
-	elements.addClass('support');
-	return $('.' + supportSubject, elements).toggle("blind", {"easing":"easeInOutCirc"}, "fast", function()
+	if(elements)
 	{
-		$(this).parent().data('state', 'support');
-	});
+		elements.addClass('support');
+		return $('.' + supportSubject, elements).toggle("blind", {"easing":"easeInOutCirc"}, "fast", function()
+		{
+			$(this).parent().data('state', 'support');
+		});
+	}
+	else
+	{
+		return $(this).parent().data('state', 'support');
+	}
 }
 
 function supportToMini(elements)
 {
-	return $('.supportParagraph:visible', elements).toggle("blind", {"easing":"easeInOutCirc"}, "fast", function()
+	if(elements)
 	{
-		$(this).parent().removeClass('support').data('state', 'mini');
-	});
+		return $('.supportParagraph:visible', elements).toggle("blind", {"easing":"easeInOutCirc"}, "fast", function()
+		{
+			$(this).parent().removeClass('support').data('state', 'mini');
+		});
+	}
+	else
+	{
+		return $(this).parent().removeClass('support').data('state', 'mini');
+	}
 }
 
 function backgroundToMini(elements)
 {
-	return elements.toggle("fade", {"easing":"easeInOutCirc"}, "slow", function()
+	if(elements)
 	{
-		$(this).removeClass('background').data('state', 'mini');
-	});
+		return elements.toggle("fade", {"easing":"easeInOutCirc"}, "slow", function()
+		{
+			$(this).removeClass('background').data('state', 'mini');
+		});
+	}
+	else
+	{
+		return $(this).removeClass('background').data('state', 'mini');
+	}
 }
 
 function crumbs(column, text)
