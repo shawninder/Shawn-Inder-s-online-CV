@@ -153,7 +153,7 @@ function crumbs(column, text)
 		}
 		else
 		{
-			breadcrumbs.html('<a onclick="allEyesOff($(\'.allEyes\'));">' + column + 's</a> >> ' + text);					
+			breadcrumbs.html('<a onclick="actIfOk(allEyesOff, $(\'.allEyes\'));">' + column + 's</a> >> ' + text);					
 		}
 	}
 }
@@ -199,12 +199,12 @@ function allEyesOn(element)
 				toggleAllEyes(element)).done(function()
 				{
 					$.when(
-						miniToBackground(others.nonSupporting),
-						updateBreadcrumbs(element)).done(function()
+						miniToBackground(others.nonSupporting)).done(function()
 					{
 						// Wave 4
 						$.when(
-							miniToSupport(others.supporting, element.attr('id'))).done(function()
+							miniToSupport(others.supporting, element.attr('id')),
+							updateBreadcrumbs(element)).done(function()
 						{
 							// Done
 							$.when(element.data('state', 'allEyes')).done(function()
@@ -228,12 +228,12 @@ function allEyesOff(element)
 		// Wave 1
 		$.when(
 			toggleAllEyes(element),
-			supportToMini(others.supporting),
-			updateBreadcrumbs()).done(function()
+			supportToMini(others.supporting)).done(function()
 		{
 			// Wave 2
 			$.when(
 				backgroundToMini(others.nonSupporting),
+				updateBreadcrumbs(),
 				element.removeClass('allEyes')).done(function()
 			{
 				// Done
@@ -253,6 +253,18 @@ function allEyesOff(element)
 	return deferredObject.promise();
 }
 
+function actIfOk(f, arg)
+{
+	if(!window.preventAction)
+	{
+		window.preventAction = true;
+		$.when(f(arg)).done(function()
+		{
+			window.preventAction = false;
+		});
+	}
+}
+
 function clickOnElementHeader(element)
 {
 	switch(element.data('state'))
@@ -262,27 +274,13 @@ function clickOnElementHeader(element)
 			log("Problems afoot! How did you click on a background element?");
 			break;
 		case 'allEyes':
-			if(!window.preventAction)
-			{
-				window.preventAction = true;
-				$.when(allEyesOff(element)).done(function()
-				{
-					window.preventAction = false;
-				});
-			}
+			actIfOk(allEyesOff, element);
 			break;
 		case 'mini':
 		case 'support':
 		default:
 			// No state is assumed to be mini
-			if(!window.preventAction)
-			{
-				window.preventAction = true;
-				$.when(allEyesOn(element)).done(function()
-				{
-					window.preventAction = false;
-				});
-			}
+			actIfOk(allEyesOn, element);
 			break;
 	}
 }
