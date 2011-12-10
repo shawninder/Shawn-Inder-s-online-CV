@@ -27,21 +27,12 @@
 		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
 		<script type="text/javascript" src="js/jquery.easing.3.1.js"></script>
-		<script type="text/javascript" src="js/jquery.cycle.all.latest.js"></script>
 		<script type="text/javascript" src="js/myScripts.js"></script>
 	</head>
 	<body>
 		<div id="header">
-			<h1>iCV: <a class="emailLink" href="mailto:shawninder@gmail.com" title="Write me an e-mail">Shawn Inder</a></h1>
+			<h1>iCV: <a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">Shawn Inder</a></h1>
 		</div>
-		
-		<!--<div class=\"slideshowWrapper\">
-			<span class=\"prev hidden-accessible\"><img src=\"images/prev.png\" alt=\"Previous\" /></span>
-			<ul class="slideshow">
-				<li><img class="PortraitPicture" src="images/shawn.jpg" alt="A picture of Shawn Inder" /></li>
-			</ul>
-			<img class=\"next hidden-accessible\" src=\"images/next.png\" alt=\"Next\" />
-		</div>-->
 
 		<div class="interactiveCV">
 			<div class="CVcontainer">
@@ -67,6 +58,7 @@
 									J.endDate AS jEndDate,
 									O.name AS oName,
 									O.location AS oLocation,
+									O.url AS oUrl,
 									J.Description AS jDescription
 								FROM
 									Jobs AS J
@@ -77,7 +69,8 @@
 							$jobs = mysql_query($sql_getJobs);
 							while($job = mysql_fetch_array($jobs))
 							{
-								$endDate = ($job['jEndDate'])?$job['jEndDate']:"now";
+								$startDate = substr($job['jStartDate'], 0, strpos($job['jStartDate'], "-"));
+								$endDate = ($job['jEndDate'])?substr($job['jEndDate'], 0, strpos($job['jEndDate'], "-")):"now";
 								
 								$sql_getImages = "
 									SELECT
@@ -92,8 +85,9 @@
 								$sql_getReferrals = "
 									SELECT
 										RE.body AS excerpt,
-										P.firstName as authorFirstName,
-										P.lastName as authorLastName
+										P.firstName AS authorFirstName,
+										P.lastName AS authorLastName,
+										P.email AS authorEmail
 									FROM
 										Referrals AS R
 										INNER JOIN job_referral_matrix AS JRM
@@ -118,52 +112,44 @@
 								$nbLinks = $links?mysql_num_rows($links):0;
 								
 								echo("<li id=\"job_" . $job['jID'] . "\" class=\"job\">
-												<h3 class=\"header\"><span class=\"position\">" . $job['jTitle'] . "</span> <span class=\"dates\">(" . $job['jStartDate'] . " » " . $endDate . ")</span><span style=\"display: block; clear: both;\"></span></h3>
+												<h3 class=\"header\"><span class=\"position\">" . $job['jTitle'] . "</span> <span class=\"dates\">(" . $startDate . " » " . $endDate . ")</span><span style=\"display: block; clear: both;\"></span></h3>
 												<div class=\"allEyesOnly\">");
 
 								// Images
 								if($nbImages > 0)
 								{
 									echo("	<div class=\"slideshowWrapper\">
-														<span class=\"prev hidden-accessible\">
-															<img src=\"images/prev.png\" alt=\"Previous\" />
-														</span>
+														<span class=\"prev hidden-accessible\"></span>
 														<ul class=\"slideshow pictureList\">");
 									while($image = mysql_fetch_array($images))
 									{
 										echo("		<li><img class=\"profilePicture\" src=\"" . $image['src'] . "\" alt=\"" . $image['description'] . "\" /></li>");
 									}
 									echo("		</ul>
-														<span class=\"next hidden-accessible\">
-															<img src=\"images/next.png\" alt=\"Next\" />
-														</span>
+														<span class=\"next hidden-accessible\"></span>
 													</div>");
 								}
 										
-								// Job description
-								echo("		<p class=\"jobDescription\">" . $job['jDescription'] . "</p>");
-								
 								// Referrals
 								if($nbReferrals > 0)
 								{
 									echo("	<div class=\"slideshowWrapper\">
-														<span class=\"prev hidden-accessible\">
-															<img src=\"images/prev.png\" alt=\"Previous\" />
-														</span>
+														<span class=\"prev hidden-accessible\"></span>
 														<ul class=\"slideshow referralList\">");
 									while($referral = mysql_fetch_array($referrals))
 									{
 										echo("		<li>
 																<q>" . $referral['excerpt'] . "</q>
-																<span class=\"signature\"> - " . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "</span>
+																<span class=\"signature\"> - <a href=\"mailto:" . $referral['authorEmail'] . "\" title=\"Send an e-mail to " . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "\" class=\"emailLink\">" . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "</a></span>
 															</li>");
 									}
 									echo("		</ul>
-														<span class=\"next hidden-accessible\">
-															<img src=\"images/next.png\" alt=\"Next\" />
-														</span>
+														<span class=\"next hidden-accessible\"></span>
 													</div>");
 								}
+								
+								// Job description
+								echo("		<p class=\"jobDescription\">" . $job['jDescription'] . "</p>");
 								
 								// Links
 								if($nbLinks > 0)
@@ -177,7 +163,7 @@
 								}
 								// Footer
 								echo("	</div>
-												<p class=\"footer\">" . $job['oName'] . ", " . $job['oLocation'] . "</p>
+												<p class=\"footer\"><a href=\"" . $job['oUrl'] . "\" title=\"Visit " . $job['oUrl'] . "\">" . $job['oName'] . "</a>, " . $job['oLocation'] . "</p>
 											</li>");
 							}
 						?>
@@ -223,7 +209,11 @@
 			<li><a>Print current view</a></li>
 			<li><a>Download CV</a></li>
 		</ul>
-		<div><img src="images/tyingCanoe.jpg" alt="A picture of me" class="background" /></div>
+		<div><img src="images/tyingCanoe.jpg" alt="A picture of me" class="background" title="Background Image: Me canoeing near Vancouver!" /></div>
+		<div id="preload">
+			<img src="images/prevON.png" />
+			<img src="images/nextON.png" />
+		</div>
 	</body>
 </html>
 

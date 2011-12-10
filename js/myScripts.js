@@ -3,53 +3,6 @@ function log() {
 	return true;
 }
 
-// TODO: I shouldn't need resizeSlideshow, cycle should take care of this. Is this a problem in my code or a corner case cycle should know about?
-function resizeSlideshow(currSlideElement, nextSlideElement, ifBigger)
-{
-	var curr = $(currSlideElement);
-	var next = $(nextSlideElement);
-	if(curr && next)
-	{
-		var nextH = next.height();
-		var currH = curr.height();
-		if(((nextH > currH) && ifBigger) || ((nextH < currH) && !ifBigger))
-		{
-			next.parent().animate(
-				{
-					height: nextH
-				},
-				'fast',
-				'easeInOutCirc');
-		}
-	}
-}
-function onBefore(currSlideElement, nextSlideElement, options, forwardFlag)
-{
-	resizeSlideshow(currSlideElement, nextSlideElement, 1);
-}
-function onAfter(currSlideElement, nextSlideElement, options, forwardFlag)
-{
-	resizeSlideshow(currSlideElement, nextSlideElement, 0);
-	
-	var index = options.currSlide;
-	if(index == 0)
-	{
-		$('.prev', $(currSlideElement).parent().parent()).addClass("hidden-accessible");
-	}
-	else
-	{
-		$('.prev', $(currSlideElement).parent().parent()).removeClass("hidden-accessible");
-	}
-	if(index == options.slideCount - 1)
-	{
-		$('.next', $(currSlideElement).parent().parent()).addClass("hidden-accessible");
-	}
-	else
-	{
-		$('.next', $(currSlideElement).parent().parent()).removeClass("hidden-accessible");
-	}
-}			
-
 function getOthers(element)
 {
 	var supportingIDs = element.data('linkedTo'), nbSupportingIDs = (supportingIDs)?supportingIDs.length:0;
@@ -99,14 +52,14 @@ function allBackgroundsToMini()
 
 function toggleAllEyes(element)
 {
-	return $('.allEyesOnly', element).toggle("blind", {"easing":"easeInOutCirc"}, "slow");
+	return $('.allEyesOnly', element).toggle('blind', {easing:"easeInOutCirc"}, 100);
 }
 
 function miniToBackground(elements)
 {
 	if(elements)
 	{
-		return elements.toggle("fade", {"easing":"easeInOutCirc"}, "slow", function()
+		return elements.toggle('fade', 500, function()
 		{
 			$(this).addClass('background').data('state', 'background');
 		});
@@ -122,7 +75,7 @@ function miniToSupport(elements, supportSubject)
 	if(elements)
 	{
 		elements.addClass('support');
-		return $('.' + supportSubject, elements).toggle("blind", {"easing":"easeInOutCirc"}, "fast", function()
+		return $('.' + supportSubject, elements).toggle("blind", {"easing":"easeInOutCirc"}, 100, function()
 		{
 			$(this).parent().data('state', 'support');
 		});
@@ -137,7 +90,7 @@ function supportToMini(elements)
 {
 	if(elements)
 	{
-		return $('.supportParagraph:visible', elements).toggle("blind", {"easing":"easeInOutCirc"}, "fast", function()
+		return $('.supportParagraph:visible', elements).toggle("blind", {"easing":"easeInOutCirc"}, 100, function()
 		{
 			$(this).parent().removeClass('support').data('state', 'mini');
 		});
@@ -152,7 +105,7 @@ function backgroundToMini(elements)
 {
 	if(elements)
 	{
-		return elements.toggle("fade", {"easing":"easeInOutCirc"}, "slow", function()
+		return elements.toggle("fade", {"easing":"easeInOutCirc"}, 500, function()
 		{
 			$(this).removeClass('background').data('state', 'mini');
 		});
@@ -175,7 +128,6 @@ function crumbs(column, text)
 		var breadcrumbs = $('.' + column.toLowerCase() + 'Crumbs');
 		if(!text)
 		{
-			// Back to default
 			breadcrumbs.text(column + "s");
 		}
 		else
@@ -214,30 +166,28 @@ function allEyesOn(element)
 	var others = getOthers(element);
 	var otherAllEyes = $('.allEyes');
 	// Wave 1
+	element.addClass('pendingAllEyes');
 	$.when(
 		allEyesOff($('.allEyes'))).done(function()
 	{
 		// Wave 2
 		$.when(
-			element.addClass('allEyes')).done(function()
+			element.addClass('allEyes').removeClass('pendingAllEyes')).done(function()
 		{
 			// Wave 3
 			$.when(
-				toggleAllEyes(element)).done(function()
+				toggleAllEyes(element),
+				miniToBackground(others.nonSupporting)).done(function()
 				{
+					// Wave 4
 					$.when(
-						miniToBackground(others.nonSupporting)).done(function()
+						miniToSupport(others.supporting, element.attr('id')),
+						updateBreadcrumbs(element)).done(function()
 					{
-						// Wave 4
-						$.when(
-							miniToSupport(others.supporting, element.attr('id')),
-							updateBreadcrumbs(element)).done(function()
+						// Done
+						$.when(element.data('state', 'allEyes')).done(function()
 						{
-							// Done
-							$.when(element.data('state', 'allEyes')).done(function()
-							{
-								deferredObject.resolve();
-							});
+							deferredObject.resolve();
 						});
 					});
 				});
@@ -259,7 +209,7 @@ function allEyesOff(element)
 		{
 			// Wave 2
 			$.when(
-				backgroundToMini(others.nonSupporting),
+				backgroundToMini(others.nonSupporting).delay(200),
 				updateBreadcrumbs(),
 				element.removeClass('allEyes')).done(function()
 			{
@@ -354,41 +304,77 @@ function getLinkInfo()
 	});
 }
 
+function afterSliding(slideshow)
+{
+	var currSlide = slideshow.data('currSlide');
+	if(currSlide.prev().length == 0)
+	{
+		$('.prev', slideshow.parent()).addClass("hidden-accessible");
+	}
+	else
+	{
+		$('.prev', slideshow.parent()).removeClass("hidden-accessible");
+	}
+	if(currSlide.next().length == 0)
+	{
+		$('.next', slideshow.parent()).addClass("hidden-accessible");
+	}
+	else
+	{
+		$('.next', slideshow.parent()).removeClass("hidden-accessible");
+	}
+}
+
+function prevSlide(slideshow)
+{
+	var currSlide = slideshow.data('currSlide');
+	if(currSlide.prev().length != 0)
+	{
+		slideshow.data('currSlide', currSlide.toggle().prev().toggle());
+	}
+	afterSliding(slideshow);
+}
+
+function nextSlide(slideshow)
+{
+	var currSlide = slideshow.data('currSlide');
+	if(currSlide.next().length != 0)
+	{
+		slideshow.data('currSlide', currSlide.toggle().next().toggle());
+	}
+	afterSliding(slideshow);
+}
+
 $(document).ready(function()
 {
 	$('.slideshow').each(function() {
 		var slideshow = $(this);
-		var nbSlides = slideshow.children().length;
+		var slides = slideshow.children();
+		var nbSlides = slides.length;
+		
 		if(nbSlides > 1)
 		{
-			$('.prev', slideshow.parent()).removeClass("hidden-accessible");
-			$('.next', slideshow.parent()).removeClass("hidden-accessible");
+			slides.not(slides.first()).toggle();
+			slideshow.data('currSlide', slides.first());
+			var parent = slideshow.parent();
+			$('.prev', parent).click(function()
+				{
+					prevSlide(slideshow);
+				});
+			$('.next', parent).click(function()
+				{
+					nextSlide(slideshow);
+				});
+			afterSliding(slideshow);
 		}
-		var parent = slideshow.parent();
-		if(slideshow.hasClass('referralList'))
-		{
-			slideshow.height($(slideshow.children().get()[0]).height());
-		}
-		slideshow.cycle({
-			fx: 'scrollHorz',
-			easing: 'easeInOutCirc',
-			timeout: 0,
-			nowrap: 1,
-			prev: $('.prev', parent),
-			next: $('.next', parent),
-			before: onBefore,
-			after: onAfter
-		});
 	});
 
-	// TODO: Remove the need for this
 	window.preventAction = false;
 	
 	$('.job .header').add($('.skill .header')).each(function()
 	{
 		var element = $(this).parent();
 		
-		// Hide allEyesOnly content
 		$('.allEyesOnly', element).toggle();
 		
 		$(this).click(function()
