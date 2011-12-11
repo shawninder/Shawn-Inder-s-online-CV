@@ -167,30 +167,21 @@ function allEyesOn(element)
 	var otherAllEyes = $('.allEyes');
 	// Wave 1
 	element.addClass('pendingAllEyes');
-	$.when(
-		allEyesOff($('.allEyes'))).done(function()
+	$.when(allEyesOff($('.allEyes'))).done(function()
 	{
+		element.addClass('allEyes').removeClass('pendingAllEyes');
 		// Wave 2
-		$.when(
-			element.addClass('allEyes').removeClass('pendingAllEyes')).done(function()
+		$.when(toggleAllEyes(element),
+			miniToBackground(others.nonSupporting)).done(function()
 		{
+			updateBreadcrumbs(element);
 			// Wave 3
-			$.when(
-				toggleAllEyes(element),
-				miniToBackground(others.nonSupporting)).done(function()
-				{
-					// Wave 4
-					$.when(
-						miniToSupport(others.supporting, element.attr('id')),
-						updateBreadcrumbs(element)).done(function()
-					{
-						// Done
-						$.when(element.data('state', 'allEyes')).done(function()
-						{
-							deferredObject.resolve();
-						});
-					});
-				});
+			$.when(miniToSupport(others.supporting, element.attr('id'))).done(function()
+			{
+				// Done
+				element.data('state', 'allEyes');
+				deferredObject.resolve();
+			});
 		});
 	});
 	return deferredObject.promise();
@@ -207,18 +198,15 @@ function allEyesOff(element)
 			toggleAllEyes(element),
 			supportToMini(others.supporting)).done(function()
 		{
+			element.removeClass('allEyes');
+			updateBreadcrumbs();
 			// Wave 2
 			$.when(
-				backgroundToMini(others.nonSupporting).delay(200),
-				updateBreadcrumbs(),
-				element.removeClass('allEyes')).done(function()
+				backgroundToMini(others.nonSupporting).delay(200)).done(function()
 			{
 				// Done
-				$.when(
-					element.data('state', 'mini')).done(function()
-				{
-					deferredObject.resolve();
-				});
+				element.data('state', 'mini');
+				deferredObject.resolve();
 			});
 		});
 	}
