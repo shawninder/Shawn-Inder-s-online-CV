@@ -6,7 +6,7 @@ function log() {
 function getOthers(element)
 {
 	var supportingIDs = element.data('linkedTo'), nbSupportingIDs = (supportingIDs)?supportingIDs.length:0;
-	var elements = (element.attr('id').match(/skill/))?$('ul', $('.jobList')).children():$('ul', $('.skillList')).children();
+	var elements = (element.attr('id').match(/skill/))?$('ul', $('.experienceList')).children():$('ul', $('.skillList')).children();
 	
 	var supportingElements, nonSupportingElements;
 
@@ -120,7 +120,7 @@ function crumbs(column, text)
 {
 	if(!column)
 	{
-		crumbs('Job');
+		crumbs('Experience');
 		crumbs('Skill');
 	}
 	else
@@ -145,12 +145,12 @@ function updateBreadcrumbs(allEyesElement)
 		{
 			var text = $('.skillName', allEyesElement).text();
 			crumbs('Skill', text);
-			crumbs('Job', 'perfecting ' + text);
+			crumbs('Experience', 'perfecting ' + text);
 		}
 		else
 		{
 			var text = $('.position', allEyesElement).text();
-			crumbs('Job', text);
+			crumbs('Experience', text);
 			crumbs('Skill', 'perfected as ' + text);
 		}
 	}
@@ -261,30 +261,30 @@ function getLinkInfo()
 		for(var i = 0; i < dataLength; ++i)
 		{
 			var skillID = "skill_" + data[i].skill;
-			var jobID = "job_" + data[i].job;
+			var experienceID = "experience_" + data[i].experience;
 			var skillDescription = "<p class=\"supportParagraph " + skillID + "\">" + data[i].description + "</p>";
-			var jobDescription = "<p class=\"supportParagraph " + jobID + "\">" + data[i].description + "</p>";
+			var experienceDescription = "<p class=\"supportParagraph " + experienceID + "\">" + data[i].description + "</p>";
 			var skillElement = $('#' + skillID);
-			var jobElement = $('#' + jobID);
-			$('.allEyesOnly', skillElement).after(jobDescription);
-			$('.allEyesOnly', jobElement).after(skillDescription);
+			var experienceElement = $('#' + experienceID);
+			$('.allEyesOnly', skillElement).after(experienceDescription);
+			$('.allEyesOnly', experienceElement).after(skillDescription);
 			
 			if(skillElement.data('linkedTo'))
 			{
-				skillElement.data('linkedTo').push(jobID);
+				skillElement.data('linkedTo').push(experienceID);
 			}
 			else
 			{
-				skillElement.data('linkedTo', new Array(jobID));
+				skillElement.data('linkedTo', new Array(experienceID));
 			}
 			
-			if(jobElement.data('linkedTo'))
+			if(experienceElement.data('linkedTo'))
 			{
-				jobElement.data('linkedTo').push(skillID);
+				experienceElement.data('linkedTo').push(skillID);
 			}
 			else
 			{
-				jobElement.data('linkedTo', new Array(skillID));
+				experienceElement.data('linkedTo', new Array(skillID));
 			}
 		}
 		
@@ -359,16 +359,19 @@ $(document).ready(function()
 
 	window.preventAction = false;
 	
-	$('.job .header').add($('.skill .header')).each(function()
+	$('.experience .header').add($('.skill .header')).each(function()
 	{
 		var element = $(this).parent();
-		
-		$('.allEyesOnly', element).toggle();
 		
 		$(this).click(function()
 		{
 			clickOnElementHeader(element);
+			return false;
 		});
+		
+		$('.allEyesOnly', element).toggle();
+		
+		$(this).addClass('scriptEnabled');
 	});
 	
 	getLinkInfo();

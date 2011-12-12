@@ -12,6 +12,7 @@
 		
 		<?php
 			include("DB.php");
+			
 			function addEvaluation($nbStars, $description)
 			{
 				$nb = ($nbStars)?$nbStars:0;
@@ -34,10 +35,10 @@
 			<h1>iCV: <a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">Shawn Inder</a></h1>
 		</div>
 
-		<div class="interactiveCV">
-			<div class="CVcontainer">
+		<div class="columnsWrapper">
+			<div class="columnsInnerWrapper">
 				<div class="leftHalf">
-					<h2 class="breadcrumbs jobCrumbs">Jobs</h2>
+					<h2 class="breadcrumbs experienceCrumbs">Experiences</h2>
 				</div>
 				<div class="rightHalf">
 					<h2 class="breadcrumbs skillCrumbs">Skills</h2>
@@ -45,40 +46,44 @@
 			</div>
 		</div>
 		
-		<div class="interactiveCV">
-			<div class="CVcontainer">
-				<div class="jobList leftHalf">
+		<div class="columnsWrapper">
+			<div class="columnsInnerWrapper">
+				<div class="experienceList leftHalf">
 					<ul>
 						<?php
-							$sql_getJobs = "
+							$str = "";
+							$spacing = "\n\t\t\t\t\t\t";
+						
+							$sql_getExperiences = "
 								SELECT
-									J.id AS jID,
-									J.title AS jTitle,
-									J.startDate AS jStartDate,
-									J.endDate AS jEndDate,
+									E.id AS eID,
+									E.title AS eTitle,
+									E.startDate AS eStartDate,
+									E.endDate AS eEndDate,
 									O.name AS oName,
 									O.location AS oLocation,
 									O.url AS oUrl,
-									J.Description AS jDescription
+									E.Description AS eDescription
 								FROM
-									Jobs AS J
+									Experiences AS E
 									INNER JOIN Organizations AS O
-										ON O.id = J.organization
+										ON O.id = E.organization
+								" . ((isset($_GET['eid']))?" WHERE E.id = '" . $_GET['eid'] . "' ":" ") . "
 								ORDER BY
-									jStartDate DESC;";
-							$jobs = mysql_query($sql_getJobs);
-							while($job = mysql_fetch_array($jobs))
+									eStartDate DESC;";
+							$experiences = mysql_query($sql_getExperiences);
+							while($experience = mysql_fetch_array($experiences))
 							{
-								$startDate = substr($job['jStartDate'], 0, strpos($job['jStartDate'], "-"));
-								$endDate = ($job['jEndDate'])?substr($job['jEndDate'], 0, strpos($job['jEndDate'], "-")):"now";
+								$startDate = substr($experience['eStartDate'], 0, strpos($experience['eStartDate'], "-"));
+								$endDate = ($experience['eEndDate'])?substr($experience['eEndDate'], 0, strpos($experience['eEndDate'], "-")):"now";
 								
 								$sql_getImages = "
 									SELECT
 										src,
 										description
 									FROM
-										job_images
-									WHERE job = " . $job['jID'];
+										experience_images
+									WHERE experience = " . $experience['eID'];
 								$images = mysql_query($sql_getImages);
 								$nbImages = $images?mysql_num_rows($images):0;
 
@@ -90,13 +95,13 @@
 										P.email AS authorEmail
 									FROM
 										Referrals AS R
-										INNER JOIN job_referral_matrix AS JRM
-											ON JRM.referral = R.id
+										INNER JOIN experience_referral_matrix AS ERM
+											ON ERM.referral = R.id
 										INNER JOIN Referral_excerpts AS RE
 											ON RE.referral = R.id
 										INNER JOIN Persons AS P
 											ON P.id = R.author
-									WHERE JRM.job = " . $job['jID'];
+									WHERE ERM.experience = " . $experience['eID'];
 								$referrals = mysql_query($sql_getReferrals);
 								$nbReferrals = $referrals?mysql_num_rows($referrals):0;
 								
@@ -106,72 +111,105 @@
 										title,
 										text
 									FROM
-										job_link_matrix
-									WHERE job = " . $job['jID'];
+										experience_link_matrix
+									WHERE experience = " . $experience['eID'];
 								$links = mysql_query($sql_getLinks);
 								$nbLinks = $links?mysql_num_rows($links):0;
 								
-								echo("<li id=\"job_" . $job['jID'] . "\" class=\"job\">
-												<h3 class=\"header\"><span class=\"position\">" . $job['jTitle'] . "</span> <span class=\"dates\">(" . $startDate . " » " . $endDate . ")</span><span style=\"display: block; clear: both;\"></span></h3>
-												<div class=\"allEyesOnly\">");
+								$str .= ($spacing . "<li id=\"experience_" . $experience['eID'] . "\" class=\"experience\">");
+								$str .= ($spacing . "\t<h3 class=\"header\">");
+								$str .= ($spacing . "\t\t<a class=\"position\" href=\"index.php?eid=" . $experience['eID'] . "\" title=\"More information about my time as a " . $experience['etitle'] . "\">" . $experience['eTitle'] . "</a>");
+								$str .= ($spacing . "\t\t<span class=\"dates\">(" . $startDate . " » " . $endDate . ")</span>");
+								$str .= ($spacing . "\t\t<span style=\"display: block; clear: both;\"></span>");
+								$str .= ($spacing . "\t</h3>");
+								$str .= ($spacing . "\t<div class=\"allEyesOnly" . ((isset($_GET['sid']))?" dontShow":"") . "\">");
 
 								// Images
 								if($nbImages > 0)
 								{
-									echo("	<div class=\"slideshowWrapper\">
-														<span class=\"prev hidden-accessible\"></span>
-														<ul class=\"slideshow pictureList\">");
+									$str .= ($spacing . "\t\t<div class=\"slideshowWrapper\">");
+									$str .= ($spacing . "\t\t\t<span class=\"prev hidden-accessible\"></span>");
+									$str .= ($spacing . "\t\t\t<ul class=\"slideshow pictureList\">");
 									while($image = mysql_fetch_array($images))
 									{
-										echo("		<li><img class=\"profilePicture\" src=\"" . $image['src'] . "\" alt=\"" . $image['description'] . "\" /></li>");
+										$str .= ($spacing . "\t\t\t\t<li><img class=\"profilePicture\" src=\"" . $image['src'] . "\" alt=\"" . $image['description'] . "\" /></li>");
 									}
-									echo("		</ul>
-														<span class=\"next hidden-accessible\"></span>
-													</div>");
+									$str .= ($spacing . "\t\t\t</ul>");
+									$str .= ($spacing . "\t\t\t<span class=\"next hidden-accessible\"></span>");
+									$str .= ($spacing . "\t\t</div>");
 								}
 										
 								// Referrals
 								if($nbReferrals > 0)
 								{
-									echo("	<div class=\"slideshowWrapper\">
-														<span class=\"prev hidden-accessible\"></span>
-														<ul class=\"slideshow referralList\">");
+									$str .= ($spacing . "\t\t<div class=\"slideshowWrapper\">");
+									$str .= ($spacing . "\t\t\t<span class=\"prev hidden-accessible\"></span>");
+									$str .= ($spacing . "\t\t\t<ul class=\"slideshow referralList\">");
 									while($referral = mysql_fetch_array($referrals))
 									{
-										echo("		<li>
-																<q>" . $referral['excerpt'] . "</q>
-																<span class=\"signature\"> - <a href=\"mailto:" . $referral['authorEmail'] . "\" title=\"Send an e-mail to " . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "\" class=\"emailLink\">" . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "</a></span>
-															</li>");
+										$str .= ($spacing . "\t\t\t\t<li>");
+										$str .= ($spacing . "\t\t\t\t\t<q>" . $referral['excerpt'] . "</q>");
+										$str .= ($spacing . "\t\t\t\t\t<span class=\"signature\"> - <a href=\"mailto:" . $referral['authorEmail'] . "\" title=\"Send an e-mail to " . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "\" class=\"emailLink\">" . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "</a></span>");
+										$str .= ($spacing . "\t\t\t\t</li>");
 									}
-									echo("		</ul>
-														<span class=\"next hidden-accessible\"></span>
-													</div>");
+									$str .= ($spacing . "\t\t\t</ul>");
+									$str .= ($spacing . "\t\t\t<span class=\"next hidden-accessible\"></span>");
+									$str .= ($spacing . "\t\t</div>");
 								}
 								
-								// Job description
-								echo("		<p class=\"jobDescription\">" . $job['jDescription'] . "</p>");
+								// Experience description
+								$str .= ($spacing . "\t\t<p class=\"experienceDescription\">" . $experience['eDescription'] . "</p>");
 								
 								// Links
 								if($nbLinks > 0)
 								{
-									echo("	<ul class=\"linkList\">");
+									$str .= ($spacing . "\t\t<ul class=\"linkList\">");
 									while($link = mysql_fetch_array($links))
 									{
-										echo("	<li><a href=\"" . $link['url'] . "\" title=\"" . $link['title'] . "\">" . $link['text'] . "</a></li>");
+										$str .= ($spacing . "\t\t\t<li><a href=\"" . $link['url'] . "\" title=\"" . $link['title'] . "\">" . $link['text'] . "</a></li>");
 									}
-									echo("	</ul>");
+									$str .= ($spacing . "\t\t</ul>");
 								}
+								$str .= ($spacing . "\t</div>");
+								
+								if(isset($_GET['sid']))
+								{
+									$sql_getLinkInfo = "SELECT
+												description
+											FROM
+												experience_skill_matrix
+											WHERE experience = '" . $experience['eID'] . "'
+												AND skill = '" . $_GET['sid'] . "'
+											ORDER BY
+												skill,
+												experience\n";
+									$linkInfo = mysql_query($sql_getLinkInfo);
+									if(mysql_num_rows($linkInfo) > 0)
+									{
+										while($supportParagraph = mysql_fetch_array($linkInfo))
+										{
+											$str .= ($spacing . "\t<p class=\"supportParagraph\">" . $supportParagraph['description'] . "</p>");
+										}
+									}
+								}
+								
 								// Footer
-								echo("	</div>
-												<p class=\"footer\"><a href=\"" . $job['oUrl'] . "\" title=\"Visit " . $job['oUrl'] . "\">" . $job['oName'] . "</a>, " . $job['oLocation'] . "</p>
-											</li>");
+								$str .= ($spacing . "\t<p class=\"footer\">");
+								$str .= ($spacing . "\t\t<a href=\"" . $experience['oUrl'] . "\" title=\"Visit " . $experience['oUrl'] . "\">" . $experience['oName'] . "</a>, " . $experience['oLocation']);
+								$str .= ($spacing . "\t</p>");
+								$str .= ($spacing . "</li>");
 							}
+							
+							echo($str . "\n");
 						?>
 					</ul>
 				</div>
 				<div class="skillList rightHalf">
 					<ul>
 						<?php
+							$str = "";
+							$spacing = "\n\t\t\t\t\t\t";
+						
 							$sql_getSkills = "
 								SELECT
 									id,
@@ -182,22 +220,44 @@
 									selfEvaluation
 								FROM
 									Skills
+								" . ((isset($_GET['sid']))?" WHERE id = '" . $_GET['sid'] . "' ":" ") . "
 								ORDER BY
 									stars DESC;";
 							$skills = mysql_query($sql_getSkills);
 							while($skill = mysql_fetch_array($skills))
 							{
-								echo("<li id=\"skill_" . $skill['id'] . "\" class=\"skill\">
-												<h3 class=\"header\" title=\"" . $skill['name'] . "\">
-													<span class=\"skillName\">");
-								echo(				($skill['shortName'] != "")?$skill['shortName']:$skill['name']);
-								echo("		</span>
-													<span class=\"stars\">" . addEvaluation($skill['stars'], $skill['selfEvaluation']) . "</span>
-													<span style=\"display: block; clear: both;\"></span>
-												</h3>
-												<div class=\"allEyesOnly\"><p>" . $skill['history'] . "</p></div>
-											</li>");
-						}
+								$str .= ($spacing . "<li id=\"skill_" . $skill['id'] . "\" class=\"skill\">");
+								$str .= ($spacing . "\t<h3 class=\"header\" title=\"" . $skill['name'] . "\">");
+								$str .= ($spacing . "\t\t<a class=\"skillName\" href=\"index.php?sid=" . $skill['id'] . "\" title=\"More information about my knowledge of " . $skill['name'] . "\">");
+								$str .= ($skill['shortName'] != "")?$skill['shortName']:$skill['name'];
+								$str .= "</a>";
+								$str .= ($spacing . "\t\t<span class=\"stars\">" . addEvaluation($skill['stars'], $skill['selfEvaluation']) . "</span>");
+								$str .= ($spacing . "\t\t<span style=\"display: block; clear: both;\"></span>");
+								$str .= ($spacing . "\t</h3>");
+								$str .= ($spacing . "\t<div class=\"allEyesOnly" . ((isset($_GET['eid']))?" dontShow":"") . "\"><p>" . $skill['history'] . "</p></div>");
+								if(isset($_GET['eid']))
+								{
+									$sql_getLinkInfo = "SELECT
+												description
+											FROM
+												experience_skill_matrix
+											WHERE experience = '" . $_GET['eid'] . "'
+												AND skill = '" . $skill['id'] . "'
+											ORDER BY
+												skill,
+												experience\n";
+									$linkInfo = mysql_query($sql_getLinkInfo);
+									if(mysql_num_rows($linkInfo) > 0)
+									{
+										while($supportParagraph = mysql_fetch_array($linkInfo))
+										{
+											$str .= ($spacing . "\t<p class=\"supportParagraph\">" . $supportParagraph['description'] . "</p>");
+										}
+									}
+								}
+								$str .= ($spacing . "</li>");
+							}
+							echo($str . "\n");
 						?>
 					</ul>
 				</div>
@@ -211,8 +271,8 @@
 		</ul>
 		<div><img src="images/tyingCanoe.jpg" alt="A picture of me" class="background" title="Background Image: Me canoeing near Vancouver!" /></div>
 		<div id="preload">
-			<img src="images/prevON.png" />
-			<img src="images/nextON.png" />
+			<img src="images/prevON.png" alt="I'm just preloading the hovered version of the Previous icon here, please ignore this." />
+			<img src="images/nextON.png" alt="I'm just preloading the hovered version of the Next icon here, please ignore this." />
 		</div>
 	</body>
 </html>

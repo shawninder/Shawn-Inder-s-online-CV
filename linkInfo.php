@@ -3,19 +3,19 @@
 	$jsonStr = "[";
 	$sql_getLinkInfo = "SELECT
 												skill,
-												job,
+												experience,
 												description
 											FROM
-												job_skill_matrix
+												experience_skill_matrix
 											ORDER BY
 												skill,
-												job";
+												experience";
 	$results = mysql_query($sql_getLinkInfo);
 	while($result = mysql_fetch_array($results))
 	{
 		$jsonStr .= ("{
 										\"skill\":\"" . $result['skill'] . "\",
-										\"job\":\"" . $result['job'] . "\",
+										\"experience\":\"" . $result['experience'] . "\",
 										\"description\":\"" . $result['description'] . "\"
 									}, ");
 	}
