@@ -25,10 +25,18 @@
 		<script type="text/javascript">(function(w,d){if(w.location!=w.parent.location||w.location.search.indexOf('__preview_css__')>-1){var t=d.createElement('script');t.type='text/javascript';t.async=true;t.src='http://www.webputty.net/js/agtzfmNzc2ZpZGRsZXIMCxIEUGFnZRjVuysM';(d.body||d.documentElement).appendChild(t);}})(window,document);</script>
 		<!-- WebPutty end -->
 		
-		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
-		<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
-		<script type="text/javascript" src="js/jquery.easing.3.1.js"></script>
-		<script type="text/javascript" src="js/myScripts.js"></script>
+		<?php
+			$str = "";
+			$spacing = "\n\t\t";
+			if(!isset($_GET['eid']) && !isset($_GET['sid']))
+			{
+				$str .= ($spacing . "<script type=\"text/javascript\" src=\"js/jquery-1.6.2.min.js\"></script>");
+				$str .= ($spacing . "<script type=\"text/javascript\" src=\"js/jquery-ui-1.8.16.custom.min.js\"></script>");
+				$str .= ($spacing . "<script type=\"text/javascript\" src=\"js/jquery.easing.3.1.js\"></script>");
+				$str .= ($spacing . "<script type=\"text/javascript\" src=\"js/myScripts.js\"></script>");
+			}
+			echo($str . "\n");
+		?>
 	</head>
 	<body>
 		<div id="header">
@@ -38,10 +46,46 @@
 		<div class="columnsWrapper">
 			<div class="columnsInnerWrapper">
 				<div class="leftHalf">
-					<h2 class="breadcrumbs experienceCrumbs">Experiences</h2>
+					<h2 class="breadcrumbs experienceCrumbs">
+						<?php
+							$str = "";
+							$spacing = "\n\t\t\t\t\t\t";
+							if(isset($_GET['eid']))
+							{
+								$str .= ($spacing . "<a href=\"index.php\" title=\"See all experiences\">Experiences</a> >> Zoom in on an experience");
+							}
+							else if(isset($_GET['sid']))
+							{
+								$str .= ($spacing . "<a href=\"index.php\" title=\"See all experiences\">Experiences</a> >> Perfecting this skill");
+							}
+							else
+							{
+								$str .= ($spacing . "Experiences");
+							}
+							echo($str . "\n");
+						?>
+					</h2>
 				</div>
 				<div class="rightHalf">
-					<h2 class="breadcrumbs skillCrumbs">Skills</h2>
+					<h2 class="breadcrumbs skillCrumbs">
+						<?php
+							$str = "";
+							$spacing = "\n\t\t\t\t\t\t";
+							if(isset($_GET['sid']))
+							{
+								$str .= ($spacing . "<a href=\"index.php\" title=\"See all skills\">Skills</a> >> Zoom in on a skill");
+							}
+							else if(isset($_GET['eid']))
+							{
+								$str .= ($spacing . "<a href=\"index.php\" title=\"See all skills\">Skills</a> >> Perfected during this experience");
+							}
+							else
+							{
+								$str .= ($spacing . "Skills");
+							}
+							echo($str . "\n");
+						?>
+					</h2>
 				</div>
 			</div>
 		</div>
@@ -68,6 +112,7 @@
 									Experiences AS E
 									INNER JOIN Organizations AS O
 										ON O.id = E.organization
+								" . ((isset($_GET['sid']))?" INNER JOIN experience_skill_matrix AS ESM ON ESM.experience = E.id AND ESM.skill = '" . $_GET['sid'] . "' ":" ") . "
 								" . ((isset($_GET['eid']))?" WHERE E.id = '" . $_GET['eid'] . "' ":" ") . "
 								ORDER BY
 									eStartDate DESC;";
@@ -220,6 +265,7 @@
 									selfEvaluation
 								FROM
 									Skills
+								" . ((isset($_GET['eid']))?" INNER JOIN experience_skill_matrix AS ESM ON ESM.skill = id AND ESM.experience = '" . $_GET['eid'] . "' ":" ") . "
 								" . ((isset($_GET['sid']))?" WHERE id = '" . $_GET['sid'] . "' ":" ") . "
 								ORDER BY
 									stars DESC;";
@@ -265,9 +311,8 @@
 		</div>
 		<div style="clear: both;"> </div>
 		<ul id="moreOptionsMenu">
-			<li><a>Version Française</a></li>
-			<li><a>Print current view</a></li>
-			<li><a>Download CV</a></li>
+			<li><a href="french.php" title="Accéder à la version française du site web" xml:lang="fr">Version Française</a></li>
+			<li><a href="download.php" title="Download a static version of my CV in the format of your choice">Download CV</a></li>
 		</ul>
 		<div><img src="images/tyingCanoe.jpg" alt="A picture of me" class="background" title="Background Image: Me canoeing near Vancouver!" /></div>
 		<div id="preload">
