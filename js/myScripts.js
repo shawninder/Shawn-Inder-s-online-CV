@@ -35,7 +35,7 @@ function getOthers(element)
 
 function allSupportsToMini()
 {
-	return $('.supportParagraph:visible').toggle("blind", {"easing":"easeInOutCirc"}, "normal", function()
+	return $('.supportParagraph:visible').toggle('blind', {'easing':'easeInOutCirc'}, 'fast', function()
 	{
 		$(this).parent().removeClass('support');
 		$(this).data('state', 'mini');
@@ -44,22 +44,19 @@ function allSupportsToMini()
 
 function allBackgroundsToMini()
 {
-	return $('.background').toggle("fade", {"easing":"easeInOutCirc"}, "slow", function()
-	{
-		$(this).removeClass('background').data('state', 'mini');
-	});
+	return $('.background').toggle().removeClass('background').data('state', 'mini');
 }
 
 function toggleAllEyes(element)
 {
-	return $('.allEyesOnly', element).toggle('blind', {easing:"easeInOutCirc"}, 100);
+	return $('.allEyesOnly', element).toggle('blind', {easing:'easeInOutCirc'}, 'fast');
 }
 
 function miniToBackground(elements)
 {
 	if(elements)
 	{
-		return elements.toggle('fade', 500, function()
+		return elements.toggle('fade', {easing: 'easeInOutCirc'}, 'fast', function()
 		{
 			$(this).addClass('background').data('state', 'background');
 		});
@@ -75,7 +72,7 @@ function miniToSupport(elements, supportSubject)
 	if(elements)
 	{
 		elements.addClass('support');
-		return $('.' + supportSubject, elements).toggle("blind", {"easing":"easeInOutCirc"}, 100, function()
+		return $('.' + supportSubject, elements).toggle('blind', {easing:'easeInOutCirc'}, 'fast', function()
 		{
 			$(this).parent().data('state', 'support');
 		});
@@ -90,7 +87,7 @@ function supportToMini(elements)
 {
 	if(elements)
 	{
-		return $('.supportParagraph:visible', elements).toggle("blind", {"easing":"easeInOutCirc"}, 100, function()
+		return $('.supportParagraph:visible', elements).toggle('blind', {easing:'easeInOutCirc'}, 'fast', function()
 		{
 			$(this).parent().removeClass('support').data('state', 'mini');
 		});
@@ -103,17 +100,7 @@ function supportToMini(elements)
 
 function backgroundToMini(elements)
 {
-	if(elements)
-	{
-		return elements.toggle("fade", {"easing":"easeInOutCirc"}, 500, function()
-		{
-			$(this).removeClass('background').data('state', 'mini');
-		});
-	}
-	else
-	{
-		return $(this).removeClass('background').data('state', 'mini');
-	}
+	return elements.toggle().removeClass('background').data('state', 'mini');
 }
 
 function crumbs(column, text)
@@ -184,12 +171,12 @@ function allEyesOn(element)
 	var otherAllEyes = $('.allEyes');
 	// Wave 1
 	element.addClass('pendingAllEyes');
-	$.when(allEyesOff($('.allEyes'))).done(function()
+	$.when(allEyesOff(otherAllEyes)).done(function()
 	{
 		element.addClass('allEyes').removeClass('pendingAllEyes');
 		// Wave 2
 		$.when(toggleAllEyes(element),
-			miniToBackground(others.nonSupporting)).done(function()
+			miniToBackground(others.nonSupporting).delay('fast')).done(function()
 		{
 			prepareSlideshows(element);
 			updateBreadcrumbs(element);
@@ -214,13 +201,13 @@ function allEyesOff(element)
 		// Wave 1
 		$.when(
 			toggleAllEyes(element),
-			supportToMini(others.supporting)).done(function()
+			supportToMini(others.supporting).delay('fast')).done(function()
 		{
 			element.removeClass('allEyes');
 			updateBreadcrumbs();
 			// Wave 2
 			$.when(
-				backgroundToMini(others.nonSupporting).delay(200)).done(function()
+				backgroundToMini(others.nonSupporting).delay('fast')).done(function()
 			{
 				// Done
 				element.data('state', 'mini');
@@ -360,15 +347,41 @@ function nextSlide(slideshow)
 
 $(document).ready(function()
 {
+	window.dontTouchDownloadMenu = false;
 	window.preventAction = true;
 	var downloadLink = $('#downloadLink');
-	var downloadMenu = $('ul', downloadLink.parent());
+	var downloadMenu = $('#downloadMenu');
 	downloadMenu.hide();
-	downloadLink.click(function(event)
+	downloadLink.attr('title', '').click(function(event)
 	{
 		event.stopPropagation();
-		downloadMenu.toggle();
 		return false;
+	}).hover(function()
+	{
+		downloadMenu.show();
+	}, function()
+	{
+		setTimeout(function()
+		{
+			if(!window.dontTouchDownloadMenu)
+			{
+				downloadMenu.hide();
+			}
+		}, 200);
+	});
+	downloadMenu.hover(function()
+	{
+		window.dontTouchDownloadMenu = true;
+	}, function()
+	{
+		setTimeout(function()
+		{
+			if(!window.dontTouchDownloadMenu)
+			{
+				downloadMenu.hide();
+			}
+		}, 200);
+		window.dontTouchDownloadMenu = false;
 	});
 	$('.slideshow').each(function() {
 		var slideshow = $(this);
