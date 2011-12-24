@@ -408,13 +408,14 @@ $(document).ready(function()
 		}
 	});
 	
-	$('.experience .header').add($('.skill .header')).each(function()
+	$('.experience .header a').add($('.skill .header a')).each(function()
 	{
-		var element = $(this).parent();
+		var element = $(this).parent().parent();
 		
 		$(this).click(function()
 		{
 			clickOnElementHeader(element);
+			$(this).blur();
 			return false;
 		});
 		
