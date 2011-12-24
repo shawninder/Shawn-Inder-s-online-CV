@@ -52,7 +52,7 @@
 	</head>
 	<body>
 		<div id="header">
-			<h1><span class="dontPrint">i</span>CV: <a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">Shawn Inder</a><span class="printOnly"> (shawninder@gmail.com)</span></h1>
+			<h1>CV: <a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">Shawn Inder</a><span class="printOnly"> (shawninder@gmail.com)</span></h1>
 			<p class="printOnly">Visit my website for more details: <a href="http://shawninder.99k.org">shawninder.99k.org</a></p>
 			<img src="/images/ubc.jpg" id="headerBackground" alt="University of British Colombia" title="In the background: University of British Columbia" />
 		</div>
@@ -160,8 +160,10 @@
 								
 									$str .= ($spacing . "<li id=\"experience_" . $experience['eID'] . "\" class=\"experience\">");
 									$str .= ($spacing . "\t<h3 class=\"header\">");
-									$str .= ($spacing . "\t\t<a class=\"position\" href=\"index.php?eid=" . $experience['eID'] . "\" title=\"More information about my time as a " . $experience['eTitle'] . "\">" . $experience['eTitle'] . "</a>");
-									$str .= ($spacing . "\t\t<span class=\"dates\">" . $dateStr . "</span>");
+									$str .= ($spacing . "\t\t<a class=\"position\" href=\"index.php?eid=" . $experience['eID'] . "\" title=\"More information about my time as a " . $experience['eTitle'] . "\">");
+									$str .= ($experience['eTitle']);
+									$str .= (" <span class=\"dates\">" . $dateStr . "</span>");
+									$str .= ("</a>");
 									$str .= ($spacing . "\t\t<span style=\"display: block; clear: both;\"></span>");
 									$str .= ($spacing . "\t</h3>");
 									$str .= ($spacing . "\t<div class=\"allEyesOnly" . ((isset($_GET['sid']))?" dontShow":"") . "\">");
@@ -302,8 +304,8 @@
 									$str .= ($spacing . "\t<h3 class=\"header\" title=\"" . $skill['name'] . "\">");
 									$str .= ($spacing . "\t\t<a class=\"skillName\" href=\"index.php?sid=" . $skill['id'] . "\" title=\"More information about my knowledge of " . $skill['name'] . "\">");
 									$str .= ($skill['shortName'] != "")?$skill['shortName']:$skill['name'];
+									$str .= " <span class=\"stars\">" . addEvaluation($skill['stars'], $skill['selfEvaluation']) . "</span>";
 									$str .= "</a>";
-									$str .= ($spacing . "\t\t<span class=\"stars\">" . addEvaluation($skill['stars'], $skill['selfEvaluation']) . "</span>");
 									$str .= ($spacing . "\t\t<span style=\"display: block; clear: both;\"></span>");
 									$str .= ($spacing . "\t</h3>");
 									$str .= ($spacing . "\t<div class=\"allEyesOnly" . ((isset($_GET['eid']))?" dontShow":"") . "\"><p>" . $skill['history'] . "</p></div>");
