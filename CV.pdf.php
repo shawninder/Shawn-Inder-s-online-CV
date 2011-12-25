@@ -52,7 +52,7 @@ class CV extends FPDF
 	{
 		$this->setDefaultStyles();
 		$this->Cell(10);
-		$this->Write($this->nLh, $name);
+		$this->Write($this->nLh, iconv('UTF-8', 'windows-1252', $name));
 		$this->Ln();
 	}
 	
@@ -69,33 +69,33 @@ class CV extends FPDF
 		$authorMail)
 	{
 		$this->setNameStyles();
-		$this->Write($this->hLh, $title . "    " . $dateStr);
+		$this->Write($this->hLh, iconv('UTF-8', 'windows-1252', $title) . "    " . $dateStr);
 		$this->Ln();
 		$this->setDefaultStyles();
-		$this->Write($this->nLh, $description);
+		$this->Write($this->nLh, iconv('UTF-8', 'windows-1252', $description));
 		$this->Ln();
 		$this->setLinkStyles();
-		$this->Write($this->nLh, $organization, $organizationUrl);
+		$this->Write($this->nLh, iconv('UTF-8', 'windows-1252', $organization), $organizationUrl);
 		$this->setDefaultStyles();
-		$this->Write($this->nLh, ", " . $organizationLocation);
+		$this->Write($this->nLh, ", " . iconv('UTF-8', 'windows-1252', $organizationLocation));
 		$this->Ln();
 	}
 	
 	function writeSkill($name, $history)
 	{
 		$this->setNameStyles();
-		$this->Write($this->nLh, $name);
+		$this->Write($this->nLh, iconv('UTF-8', 'windows-1252', $name));
 		$this->setDefaultStyles();
-		$this->Write($this->nLh, " : " . $history);
+		$this->Write($this->nLh, " : " . iconv('UTF-8', 'windows-1252', $history));
 		$this->Ln(10);
 	}
 	
 	function writeFeedback($name, $quote)
 	{
 		$this->setNameStyles();
-		$this->Write($this->nLh, $name);
+		$this->Write($this->nLh, iconv('UTF-8', 'windows-1252', $name));
 		$this->setQuoteStyles();
-		$this->Write($this->nLh, " : " . $quote);
+		$this->Write($this->nLh, " : " . iconv('UTF-8', 'windows-1252', $quote));
 		$this->Ln(10);
 	}
 	
@@ -167,7 +167,7 @@ while($experience = mysql_fetch_array($experiences))
 	// Date
 	$startDate = substr($experience['eStartDate'], 0, strpos($experience['eStartDate'], "-"));
 	$endDate = ($experience['eEndDate'])?substr($experience['eEndDate'], 0, strpos($experience['eEndDate'], "-")):"now";
-	$dateStr = ($startDate == $endDate)?"(" . $startDate . ")":"(" . $startDate . " » " . $endDate . ")";
+	$dateStr = ($startDate == $endDate)?"(" . $startDate . ")":"(" . $startDate . iconv('UTF-8', 'windows-1252', " » ") . $endDate . ")";
 
 	// Image
 	$sql_getImage = "
