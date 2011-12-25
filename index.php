@@ -359,9 +359,10 @@
 			</div>
 		</div>
 		<ul id="moreOptionsMenu">
-				<li><a href="french.php" title="Accéder à la version française du site web" xml:lang="fr">Version Française</a></li>
+				<li><a href="french.php" title="Accéder à la version française du site web" xml:lang="fr" onclick="alert('Désolé!\nJe n\'ai pas encore traduit mes textes en français.'); return false;">Version Française</a></li>
 				<li>
-					<a id="downloadLink" href="download.php" title="Download a static version of my CV in the format of your choice">Download CV</a>
+					<!--<a id="downloadLink" href="download.php" title="Download a static version of my CV in the format of your choice">Download CV</a>-->
+					<a href="CV.pdf.php" title="Download my CV as a PDF file">Download</a>
 					<div id="downloadMenu">
 						<ul>
 							<?php
