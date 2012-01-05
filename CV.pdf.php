@@ -232,7 +232,7 @@ while($experience = mysql_fetch_array($experiences))
 		$referralAuthorEmail);
 
 	// Links
-	$sql_getLinks = "
+	/*$sql_getLinks = "
 		SELECT
 			url,
 			title,
@@ -250,7 +250,7 @@ while($experience = mysql_fetch_array($experiences))
 			$cv->Write($cv->nLh, $link['text'], $link['url']);
 			$cv->Ln();
 		}
-	}
+	}*/
 }
 
 $cv->AddPage();

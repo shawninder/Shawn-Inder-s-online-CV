@@ -1,6 +1,6 @@
 <?php
 	// Define DSN, username and password
-	$host = 'shawninder.99k.org';
+	$host = 'localhost';
 	$username_site = '39855_site';
 	$username_shawn = '39855_shawn';
 	$password_site  = '514rep';

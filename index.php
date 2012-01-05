@@ -54,11 +54,11 @@
 		<div id="header">
 			<h1>CV: <a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">Shawn Inder</a><span class="printOnly"> (shawninder@gmail.com)</span></h1>
 			<p class="printOnly">Visit my website for more details: <a href="http://shawninder.99k.org">shawninder.99k.org</a></p>
-			<img src="/images/ubc.jpg" id="headerBackground" alt="University of British Colombia" title="In the background: University of British Columbia" />
+			<img src="images/ubc.jpg" id="headerBackground" alt="University of British Colombia" title="In the background: University of British Columbia" />
 		</div>
 		
 		<div id="theRest">
-			<img src="images/canoe.jpg" alt="A picture of me" class="background" title="Background Image: Me canoeing near Vancouver!" />
+			<img src="images/canoe.jpg" alt="A picture of me" class="background" title="Background Image: Canoeing near Vancouver!" />
 			<?php
 				$str = "";
 				$spacing = "\n\t\t";
@@ -147,7 +147,7 @@
 									$referrals = mysql_query($sql_getReferrals);
 									$nbReferrals = $referrals?mysql_num_rows($referrals):0;
 								
-									$sql_getLinks = "
+									/*$sql_getLinks = "
 										SELECT
 											url,
 											title,
@@ -156,7 +156,7 @@
 											experience_link_matrix
 										WHERE experience = " . $experience['eID'];
 									$links = mysql_query($sql_getLinks);
-									$nbLinks = $links?mysql_num_rows($links):0;
+									$nbLinks = $links?mysql_num_rows($links):0;*/
 								
 									$str .= ($spacing . "<li id=\"experience_" . $experience['eID'] . "\" class=\"experience\">");
 									$str .= ($spacing . "\t<h3 class=\"header\">");
@@ -207,7 +207,7 @@
 									}
 								
 									// Links
-									if($nbLinks > 0)
+									/*if($nbLinks > 0)
 									{
 										$str .= ($spacing . "\t\t<ul class=\"linkList\">");
 										while($link = mysql_fetch_array($links))
@@ -215,7 +215,7 @@
 											$str .= ($spacing . "\t\t\t<li><a href=\"" . $link['url'] . "\" title=\"" . $link['title'] . "\">" . $link['text'] . "</a></li>");
 										}
 										$str .= ($spacing . "\t\t</ul>");
-									}
+									}*/
 									$str .= ($spacing . "\t</div>");
 								
 									if(isset($_GET['sid']))
