@@ -182,6 +182,7 @@
 										$str .= ($spacing . "\t\t\t<span class=\"next hidden-accessible\"></span>");
 										$str .= ($spacing . "\t\t</div>");
 									}
+									mysql_free_result($images);
 
 									// Experience description
 									$str .= ($spacing . "\t\t<p class=\"experienceDescription\">" . $experience['eDescription'] . "<div style=\"clear: both;\"></div></p>");
@@ -205,6 +206,7 @@
 										$str .= ($spacing . "\t\t\t<button class=\"next hidden-accessible\"></button>");
 										$str .= ($spacing . "\t\t</div>");
 									}
+									mysql_free_result($referrals);
 								
 									// Links
 									/*if($nbLinks > 0)
@@ -237,6 +239,7 @@
 												$str .= ($spacing . "\t<p class=\"supportParagraph\">" . $supportParagraph['description'] . "</p>");
 											}
 										}
+										mysql_free_result($linkInfo);
 									}
 								
 									// Footer
@@ -245,6 +248,7 @@
 									$str .= ($spacing . "\t</p>");
 									$str .= ($spacing . "</li>");
 								}
+								mysql_free_result($experiences);
 							
 								echo($str . "\n");
 							?>
@@ -328,9 +332,11 @@
 												$str .= ($spacing . "\t<p class=\"supportParagraph\">" . $supportParagraph['description'] . "</p>");
 											}
 										}
+										mysql_free_result($linkInfo);
 									}
 									$str .= ($spacing . "</li>");
 								}
+								mysql_free_result($skills);
 								echo($str . "\n");
 							?>
 						</ul>

@@ -19,6 +19,7 @@
 										\"description\":\"" . $result['description'] . "\"
 									}, ");
 	}
+	mysql_free_result($results);
 	$jsonStr = substr($jsonStr, 0, -2) . "]";
 	echo $jsonStr;
 ?>
