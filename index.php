@@ -246,7 +246,7 @@
 								
 									// Footer
 									$str .= ($spacing . "\t<p class=\"footer\">");
-									$str .= ($spacing . "\t\t<a href=\"" . $experience['oUrl'] . "\" title=\"Visit " . $experience['oUrl'] . "\">" . $experience['oName'] . "</a>, " . $experience['oLocation']);
+									$str .= ($spacing . "\t\t<a href=\"" . $experience['oUrl'] . "\" title=\"Visit " . $experience['oUrl'] . "\" target=\"_blank\">" . $experience['oName'] . "</a>, " . $experience['oLocation']);
 									$str .= ($spacing . "\t</p>");
 									$str .= ($spacing . "</li>");
 								}
