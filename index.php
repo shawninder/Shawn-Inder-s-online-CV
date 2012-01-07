@@ -161,7 +161,7 @@
 									$str .= ($spacing . "<li id=\"experience_" . $experience['eID'] . "\" class=\"experience\">");
 									$str .= ($spacing . "\t<h3 class=\"header\">");
 									$str .= ($spacing . "\t\t<a class=\"position\" href=\"index.php?eid=" . $experience['eID'] . "\" title=\"More information about my time as a " . $experience['eTitle'] . "\">");
-									$str .= ($experience['eTitle']);
+									$str .= ("<span class=\"onlyPosition\">" . $experience['eTitle'] . "</span>");
 									$str .= (" <span class=\"dates\">" . $dateStr . "</span>");
 									$str .= ("</a>");
 									$str .= ($spacing . "\t\t<span style=\"display: block; clear: both;\"></span>");
@@ -207,6 +207,8 @@
 										$str .= ($spacing . "\t\t</div>");
 									}
 									mysql_free_result($referrals);
+									
+									$str .= ($spacing . "\t\t<p class=\"seeOtherColumn\">Skills perfected <img src=\"images/supportingSkill.png\" alt=\"See other column\" /></p>");
 								
 									// Links
 									/*if($nbLinks > 0)
@@ -312,7 +314,7 @@
 									$str .= "</a>";
 									$str .= ($spacing . "\t\t<span style=\"display: block; clear: both;\"></span>");
 									$str .= ($spacing . "\t</h3>");
-									$str .= ($spacing . "\t<div class=\"allEyesOnly" . ((isset($_GET['eid']))?" dontShow":"") . "\"><p>" . $skill['history'] . "</p></div>");
+									$str .= ($spacing . "\t<div class=\"allEyesOnly" . ((isset($_GET['eid']))?" dontShow":"") . "\"><p>" . $skill['history'] . "</p><p class=\"seeOtherColumn\"><img src=\"images/supportingExperience.png\" alt=\"See other column\" /> Pertinent experiences</p></div>");
 									if(isset($_GET['eid']))
 									{
 										$sql_getLinkInfo = "SELECT

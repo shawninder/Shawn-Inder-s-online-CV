@@ -117,9 +117,13 @@ function crumbs(column, text)
 		{
 			breadcrumbs.text(column + "s");
 		}
+		else if (text == 'REMOVE')
+		{
+			breadcrumbs.text('');
+		}
 		else
 		{
-			breadcrumbs.html('<a href="index.php" onclick="actIfOk(allEyesOff, $(\'.allEyes\')); return false;">' + column + 's</a> >> ' + text);					
+			breadcrumbs.html('<a href="index.php" onclick="actIfOk(allEyesOff, $(\'.allEyes\')); return false;" title="Back to all ' + column + 's">' + column + 's</a> >> ' + text);					
 		}
 	}
 }
@@ -132,13 +136,13 @@ function updateBreadcrumbs(allEyesElement)
 		{
 			var text = $('.skillName', allEyesElement).text();
 			crumbs('Skill', text);
-			crumbs('Experience', 'perfecting ' + text);
+			crumbs('Experience', 'REMOVE');
 		}
 		else
 		{
-			var text = $('.position', allEyesElement).text();
+			var text = $('.onlyPosition', allEyesElement).text();
 			crumbs('Experience', text);
-			crumbs('Skill', 'perfected as ' + text);
+			crumbs('Skill', 'REMOVE');
 		}
 	}
 	else
@@ -176,6 +180,7 @@ function allEyesOn(element)
 		element.addClass('allEyes').removeClass('pendingAllEyes');
 		// Wave 2
 		$.when(toggleAllEyes(element),
+			miniToBackground(element.siblings()),
 			miniToBackground(others.nonSupporting).delay('fast')).done(function()
 		{
 			prepareSlideshows(element);
@@ -207,6 +212,7 @@ function allEyesOff(element)
 			updateBreadcrumbs();
 			// Wave 2
 			$.when(
+				backgroundToMini(element.siblings()),
 				backgroundToMini(others.nonSupporting).delay('fast')).done(function()
 			{
 				// Done
