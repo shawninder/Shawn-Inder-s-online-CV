@@ -246,7 +246,12 @@
 								
 									// Footer
 									$str .= ($spacing . "\t<p class=\"footer\">");
-									$str .= ($spacing . "\t\t<a href=\"" . $experience['oUrl'] . "\" title=\"Visit " . $experience['oUrl'] . "\" target=\"_blank\">" . $experience['oName'] . "</a>, " . $experience['oLocation']);
+									if($experience['oUrl'] != "")
+									{
+										$str .= ($spacing . "\t\t<a href=\"" . $experience['oUrl'] . "\" title=\"Visit " . $experience['oUrl'] . "\" target=\"_blank\">" . $experience['oName'] . "</a>, " . $experience['oLocation']);
+									} else {
+										$str .= ($spacing . "\t\t" . $experience['oName'] . ", " . $experience['oLocation']);
+									}
 									$str .= ($spacing . "\t</p>");
 									$str .= ($spacing . "</li>");
 								}
