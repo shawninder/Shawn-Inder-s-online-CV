@@ -9,6 +9,7 @@
 		header('Location: http://shawninder.99k.org');
 	}
 ?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html version="-//W3C//DTD XHTML 1.1//EN"
@@ -53,11 +54,11 @@
 		<div id="header">
 			<h1>CV: <a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">Shawn Inder</a><span class="printOnly"> (shawninder@gmail.com)</span></h1>
 			<p class="printOnly">Visit my website for more details: <a href="http://shawninder.99k.org">shawninder.99k.org</a></p>
-			<img src="/images/ubc.jpg" id="headerBackground" alt="University of British Colombia" title="In the background: University of British Columbia" />
+			<img src="images/ubc.jpg" id="headerBackground" alt="University of British Colombia" title="In the background: University of British Columbia" />
 		</div>
 		
 		<div id="theRest">
-			<img src="images/canoe.jpg" alt="A picture of me" class="background" title="Background Image: Me canoeing near Vancouver!" />
+			<img src="images/canoe.jpg" alt="A picture of me" class="background" title="Background Image: Canoeing near Vancouver!" />
 			<h1>404: Page not found. If you were looking for my interactive CV, here it is.</h1>
 			<?php
 				$str = "";
@@ -70,25 +71,6 @@
 				}
 				echo($str . "\n");
 			?>
-						<h2 class="breadcrumbs experienceCrumbs">
-							<?php
-								$str = "";
-								$spacing = "\n\t\t\t\t\t\t";
-								if(isset($_GET['eid']))
-								{
-									$str .= ($spacing . "<a href=\"index.php\" title=\"See all experiences\">Experiences</a> >> Zoom in on an experience");
-								}
-								else if(isset($_GET['sid']))
-								{
-									$str .= ($spacing . "<a href=\"index.php\" title=\"See all experiences\">Experiences</a> >> Perfecting this skill");
-								}
-								else
-								{
-									$str .= ($spacing . "Experiences");
-								}
-								echo($str . "\n");
-							?>
-						</h2>
 						<ul>
 							<?php
 								$str = "";
@@ -153,7 +135,7 @@
 											title,
 											text
 										FROM
-											experience_link_matrix
+											experience_link
 										WHERE experience = " . $experience['eID'];
 									$links = mysql_query($sql_getLinks);
 									$nbLinks = $links?mysql_num_rows($links):0;
@@ -161,7 +143,7 @@
 									$str .= ($spacing . "<li id=\"experience_" . $experience['eID'] . "\" class=\"experience\">");
 									$str .= ($spacing . "\t<h3 class=\"header\">");
 									$str .= ($spacing . "\t\t<a class=\"position\" href=\"index.php?eid=" . $experience['eID'] . "\" title=\"More information about my time as a " . $experience['eTitle'] . "\">");
-									$str .= ($experience['eTitle']);
+									$str .= ("<span class=\"onlyPosition\">" . $experience['eTitle'] . "</span>");
 									$str .= (" <span class=\"dates\">" . $dateStr . "</span>");
 									$str .= ("</a>");
 									$str .= ($spacing . "\t\t<span style=\"display: block; clear: both;\"></span>");
@@ -182,6 +164,7 @@
 										$str .= ($spacing . "\t\t\t<span class=\"next hidden-accessible\"></span>");
 										$str .= ($spacing . "\t\t</div>");
 									}
+									mysql_free_result($images);
 
 									// Experience description
 									$str .= ($spacing . "\t\t<p class=\"experienceDescription\">" . $experience['eDescription'] . "<div style=\"clear: both;\"></div></p>");
@@ -205,15 +188,24 @@
 										$str .= ($spacing . "\t\t\t<button class=\"next hidden-accessible\"></button>");
 										$str .= ($spacing . "\t\t</div>");
 									}
-								
+									mysql_free_result($referrals);
+									
+									$str .= ($spacing . "\t\t<p class=\"seeOtherColumn");
+									if(!isset($_GET['eid']))
+									{
+										$str .= " hidden-accessible";
+									}
+									$str .= ("\">Skills perfected <img src=\"images/supportingSkill.png\" alt=\"See other column\" /></p>");
+									
 									// Links
 									if($nbLinks > 0)
 									{
 										$str .= ($spacing . "\t\t<ul class=\"linkList\">");
 										while($link = mysql_fetch_array($links))
 										{
-											$str .= ($spacing . "\t\t\t<li><a href=\"" . $link['url'] . "\" title=\"" . $link['title'] . "\">" . $link['text'] . "</a></li>");
+											$str .= ($spacing . "\t\t\t<li><a href=\"" . $link['url'] . "\" title=\"" . $link['title'] . "\" target=\"_blank\">" . $link['text'] . "</a></li>");
 										}
+										mysql_free_result($links);
 										$str .= ($spacing . "\t\t</ul>");
 									}
 									$str .= ($spacing . "\t</div>");
@@ -237,19 +229,30 @@
 												$str .= ($spacing . "\t<p class=\"supportParagraph\">" . $supportParagraph['description'] . "</p>");
 											}
 										}
+										mysql_free_result($linkInfo);
 									}
 								
 									// Footer
 									$str .= ($spacing . "\t<p class=\"footer\">");
-									$str .= ($spacing . "\t\t<a href=\"" . $experience['oUrl'] . "\" title=\"Visit " . $experience['oUrl'] . "\">" . $experience['oName'] . "</a>, " . $experience['oLocation']);
+									if($experience['oUrl'] != "")
+									{
+										$str .= ($spacing . "\t\t<a href=\"" . $experience['oUrl'] . "\" title=\"Visit " . $experience['oUrl'] . "\" target=\"_blank\">" . $experience['oName'] . "</a>, " . $experience['oLocation']);
+									} else {
+										$str .= ($spacing . "\t\t" . $experience['oName'] . ", " . $experience['oLocation']);
+									}
 									$str .= ($spacing . "\t</p>");
 									$str .= ($spacing . "</li>");
 								}
+								mysql_free_result($experiences);
 							
 								echo($str . "\n");
 							?>
 						</ul>
 					<?php
+					if(isset($_GET['eid']) || isset($_GET['sid']))
+						{
+							echo('<a href="index.php" title="See all experiences" class="seeAll">Back to all experiences</a>');
+						}
 						$str = "";
 						$spacing = "\n\t\t\t\t";
 						if(!isset($_GET['static']) || $_GET['static'] != 1)
@@ -259,25 +262,6 @@
 						}
 						echo($str . "\n");
 					?>
-						<h2 class="breadcrumbs skillCrumbs">
-							<?php
-								$str = "";
-								$spacing = "\n\t\t\t\t\t\t";
-								if(isset($_GET['sid']))
-								{
-									$str .= ($spacing . "<a href=\"index.php\" title=\"See all skills\">Skills</a> >> Zoom in on a skill");
-								}
-								else if(isset($_GET['eid']))
-								{
-									$str .= ($spacing . "<a href=\"index.php\" title=\"See all skills\">Skills</a> >> Perfected during this experience");
-								}
-								else
-								{
-									$str .= ($spacing . "Skills");
-								}
-								echo($str . "\n");
-							?>
-						</h2>
 						<ul>
 							<?php
 								$str = "";
@@ -308,7 +292,15 @@
 									$str .= "</a>";
 									$str .= ($spacing . "\t\t<span style=\"display: block; clear: both;\"></span>");
 									$str .= ($spacing . "\t</h3>");
-									$str .= ($spacing . "\t<div class=\"allEyesOnly" . ((isset($_GET['eid']))?" dontShow":"") . "\"><p>" . $skill['history'] . "</p></div>");
+									$str .= ($spacing . "\t<div class=\"allEyesOnly" . ((isset($_GET['eid']))?" dontShow":"") . "\">");
+									$str .= ($spacing . "\t\t<p>" . $skill['history'] . "</p>");
+									$str .= ($spacing . "\t\t<p class=\"seeOtherColumn");
+									if(!isset($_GET['sid']))
+									{
+										$str .= " hidden-accessible";
+									}
+									$str .= ("\"><img src=\"images/supportingExperience.png\" alt=\"See other column\" /> Pertinent experiences</p>");
+									$str .= ($spacing . "\t</div>");
 									if(isset($_GET['eid']))
 									{
 										$sql_getLinkInfo = "SELECT
@@ -328,13 +320,19 @@
 												$str .= ($spacing . "\t<p class=\"supportParagraph\">" . $supportParagraph['description'] . "</p>");
 											}
 										}
+										mysql_free_result($linkInfo);
 									}
 									$str .= ($spacing . "</li>");
 								}
+								mysql_free_result($skills);
 								echo($str . "\n");
 							?>
-						</ul>
+						</ul>		
 			<?php
+				if(isset($_GET['eid']) || isset($_GET['sid']))
+				{
+					echo('<a href="index.php" title="See all skills" class="seeAll">Back to all skills</a>');
+				}
 				$str = "";
 				$spacing = "\n\t\t";
 				if(!isset($_GET['static']) || $_GET['static'] != 1)
@@ -363,9 +361,10 @@
 				<li>
 					<!--<a id="downloadLink" href="download.php" title="Download a static version of my CV in the format of your choice">Download CV</a>-->
 					<a href="CV.pdf.php" title="Download my CV as a PDF file">Download</a>
-					<div id="downloadMenu">
+					<!--<div id="downloadMenu">
 						<ul>
 							<?php
+								/*
 								function addFormatIfExists($format)
 								{
 									$fileName = "CV." . $format . ".php";
@@ -381,8 +380,9 @@
 								addFormatIfExists('doc');
 								addFormatIfExists('rtf');
 								addFormatIfExists('txt');
+								*/
 							?>
-						</ul>
+						</ul>-->
 						<div style="clear: both;"></div>
 					</div>
 				</li>
