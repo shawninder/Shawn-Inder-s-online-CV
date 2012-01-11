@@ -375,6 +375,8 @@ $(document).ready(function()
 	$('.skillList').append('<a href="index.php" title="See all skills" onclick="unAllEyes(); return false;" class="seeAll">Back to all skills</a>');
 	$('.seeAll').hide();
 	
+	$('.seeOtherColumn').removeClass('hidden-accessible');
+	
 	$('.experience .header a').add($('.skill .header a')).each(function()
 	{
 		var element = $(this).parent().parent();

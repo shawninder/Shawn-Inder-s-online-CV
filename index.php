@@ -189,8 +189,13 @@
 									}
 									mysql_free_result($referrals);
 									
-									$str .= ($spacing . "\t\t<p class=\"seeOtherColumn\">Skills perfected <img src=\"images/supportingSkill.png\" alt=\"See other column\" /></p>");
-								
+									$str .= ($spacing . "\t\t<p class=\"seeOtherColumn");
+									if(!isset($_GET['eid']))
+									{
+										$str .= " hidden-accessible";
+									}
+									$str .= ("\">Skills perfected <img src=\"images/supportingSkill.png\" alt=\"See other column\" /></p>");
+									
 									// Links
 									if($nbLinks > 0)
 									{
@@ -243,6 +248,10 @@
 							?>
 						</ul>
 					<?php
+					if(isset($_GET['eid']) || isset($_GET['sid']))
+						{
+							echo('<a href="index.php" title="See all experiences" class="seeAll">Back to all experiences</a>');
+						}
 						$str = "";
 						$spacing = "\n\t\t\t\t";
 						if(!isset($_GET['static']) || $_GET['static'] != 1)
@@ -282,7 +291,15 @@
 									$str .= "</a>";
 									$str .= ($spacing . "\t\t<span style=\"display: block; clear: both;\"></span>");
 									$str .= ($spacing . "\t</h3>");
-									$str .= ($spacing . "\t<div class=\"allEyesOnly" . ((isset($_GET['eid']))?" dontShow":"") . "\"><p>" . $skill['history'] . "</p><p class=\"seeOtherColumn\"><img src=\"images/supportingExperience.png\" alt=\"See other column\" /> Pertinent experiences</p></div>");
+									$str .= ($spacing . "\t<div class=\"allEyesOnly" . ((isset($_GET['eid']))?" dontShow":"") . "\">");
+									$str .= ($spacing . "\t\t<p>" . $skill['history'] . "</p>");
+									$str .= ($spacing . "\t\t<p class=\"seeOtherColumn");
+									if(!isset($_GET['sid']))
+									{
+										$str .= " hidden-accessible";
+									}
+									$str .= ("\"><img src=\"images/supportingExperience.png\" alt=\"See other column\" /> Pertinent experiences</p>");
+									$str .= ($spacing . "\t</div>");
 									if(isset($_GET['eid']))
 									{
 										$sql_getLinkInfo = "SELECT
@@ -309,8 +326,12 @@
 								mysql_free_result($skills);
 								echo($str . "\n");
 							?>
-						</ul>
+						</ul>		
 			<?php
+				if(isset($_GET['eid']) || isset($_GET['sid']))
+				{
+					echo('<a href="index.php" title="See all skills" class="seeAll">Back to all skills</a>');
+				}
 				$str = "";
 				$spacing = "\n\t\t";
 				if(!isset($_GET['static']) || $_GET['static'] != 1)
@@ -339,9 +360,10 @@
 				<li>
 					<!--<a id="downloadLink" href="download.php" title="Download a static version of my CV in the format of your choice">Download CV</a>-->
 					<a href="CV.pdf.php" title="Download my CV as a PDF file">Download</a>
-					<div id="downloadMenu">
+					<!--<div id="downloadMenu">
 						<ul>
 							<?php
+								/*
 								function addFormatIfExists($format)
 								{
 									$fileName = "CV." . $format . ".php";
@@ -357,8 +379,9 @@
 								addFormatIfExists('doc');
 								addFormatIfExists('rtf');
 								addFormatIfExists('txt');
+								*/
 							?>
-						</ul>
+						</ul>-->
 						<div style="clear: both;"></div>
 					</div>
 				</li>
