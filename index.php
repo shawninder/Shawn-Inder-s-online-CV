@@ -60,6 +60,12 @@
 		<div id="theRest">
 			<img src="images/canoe.jpg" alt="A picture of me" class="background" title="Background Image: Canoeing near Vancouver!" />
 			<?php
+				if(isset($fourOfour) && $fourOfour == 1)
+				{
+					echo("<h1>404: Page not found. If you were looking for my interactive CV, here it is.</h1>");
+				}
+			?>
+			<?php
 				$str = "";
 				$spacing = "\n\t\t";
 				if(!isset($_GET['static']) || $_GET['static'] != 1)
