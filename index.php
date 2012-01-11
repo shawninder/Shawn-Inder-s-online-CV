@@ -52,8 +52,7 @@
 	</head>
 	<body>
 		<div id="header">
-			<h1>CV: <a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">Shawn Inder</a></h1>
-			<a class="myEmail" href="mailto:shawninder@gmail.com" title="Send me an e-mail">ShawnInder@gmail.com</a>
+			<h1>CV: <a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">Shawn Inder</a><span class="printOnly"> (shawninder@gmail.com)</span></h1>
 			<p class="printOnly">Visit my website for more details: <a href="http://shawninder.99k.org">shawninder.99k.org</a></p>
 			<img src="images/ubc.jpg" id="headerBackground" alt="University of British Colombia" title="In the background: University of British Columbia" />
 		</div>
