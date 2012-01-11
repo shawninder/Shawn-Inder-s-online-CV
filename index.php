@@ -30,6 +30,11 @@
 				$nb = ($nbStars)?$nbStars:0;
 				return("<img src=\"images/stars_" . $nb . ".png\" alt=\"" . $nbStars . " stars: " . $description . "\" title=\"" . $description . "\" />");
 			}
+			
+			function sorryNoFrench()
+			{
+				return("Désolé, je travaille présentement sur la traduction française. À venir bientôt!");
+			}
 		?>
 
 		<!-- Using WebPutty -->
@@ -62,7 +67,11 @@
 			<?php
 				if(isset($fourOfour) && $fourOfour == 1)
 				{
-					echo("<h1>404: Page not found. If you were looking for my interactive CV, here it is.</h1>");
+					echo("<h1 class=\"dissmissable\">404: Page not found. If you were looking for my CV, here it is.</h1>");
+				}
+				elseif(isset($frenchVersion) && $frenchVersion == 1)
+				{
+					echo("<h1 class=\"dissmissable\" lang=\"fr\">" . sorryNoFrench() . "</h1>");
 				}
 			?>
 			<?php
@@ -363,7 +372,7 @@
 		</div>
 		<ul id="moreOptionsMenu">
 			<li><a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">shawninder@gmail.com</a></li>
-			<li><a href="french.php" title="Accéder à la version française du site web" xml:lang="fr" onclick="alert('Désolé!\nJe n\'ai pas encore traduit mes textes en français.'); return false;">Version Française</a></li>
+			<li><a href="french.php" title="Accéder à la version française du site web" xml:lang="fr" onclick="alert('<?php echo(sorryNoFrench()); ?>'); return false;">Version Française</a></li>
 			<li>
 				<!--<a id="downloadLink" href="download.php" title="Download a static version of my CV in the format of your choice">Download CV</a>-->
 				<a href="CV.pdf.php" title="Download my CV as a PDF file">Download</a>

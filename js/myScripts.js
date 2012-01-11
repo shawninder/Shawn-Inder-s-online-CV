@@ -394,5 +394,9 @@ $(document).ready(function()
 	});
 	
 	getLinkInfo();
+	$('.dissmissable').attr('title','Click to dissmiss').addClass('scriptEnabledDissmissable').click(function()
+	{
+		$(this).hide();
+	});
 	window.preventAction = false;
 });
