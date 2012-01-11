@@ -103,54 +103,6 @@ function backgroundToMini(elements)
 	return elements.toggle().removeClass('background').data('state', 'mini');
 }
 
-function crumbs(column, text)
-{
-	if(!column)
-	{
-		crumbs('Experience');
-		crumbs('Skill');
-	}
-	else
-	{
-		var breadcrumbs = $('.' + column.toLowerCase() + 'Crumbs');
-		if(!text)
-		{
-			breadcrumbs.text(column + "s");
-		}
-		else if (text == 'REMOVE')
-		{
-			breadcrumbs.text('');
-		}
-		else
-		{
-			breadcrumbs.html('<a href="index.php" onclick="actIfOk(allEyesOff, $(\'.allEyes\')); return false;" title="Back to all ' + column + 's">' + column + 's</a> >> ' + text);					
-		}
-	}
-}
-
-function updateBreadcrumbs(allEyesElement)
-{
-	if(allEyesElement)
-	{
-		if(allEyesElement.attr('id').match(/skill/))
-		{
-			var text = $('.skillName', allEyesElement).text();
-			crumbs('Skill', text);
-			crumbs('Experience', 'REMOVE');
-		}
-		else
-		{
-			var text = $('.onlyPosition', allEyesElement).text();
-			crumbs('Experience', text);
-			crumbs('Skill', 'REMOVE');
-		}
-	}
-	else
-	{
-		crumbs();
-	}
-}
-
 function prepareSlideshows(element)
 {
 	$('.slideshow', element).each(function() {
@@ -184,7 +136,7 @@ function allEyesOn(element)
 			miniToBackground(others.nonSupporting).delay('fast')).done(function()
 		{
 			prepareSlideshows(element);
-			updateBreadcrumbs(element);
+			$('.seeAll').show();
 			// Wave 3
 			$.when(miniToSupport(others.supporting, element.attr('id'))).done(function()
 			{
@@ -209,7 +161,7 @@ function allEyesOff(element)
 			supportToMini(others.supporting).delay('fast')).done(function()
 		{
 			element.removeClass('allEyes');
-			updateBreadcrumbs();
+			$('.seeAll').hide();
 			// Wave 2
 			$.when(
 				backgroundToMini(element.siblings()),
@@ -351,6 +303,11 @@ function nextSlide(slideshow)
 	changeSlides(slideshow, currSlide, nextSlide, 'left', 'right');
 }
 
+function unAllEyes()
+{
+	allEyesOff($('.allEyes'));
+}
+
 $(document).ready(function()
 {
 	window.dontTouchDownloadMenu = false;
@@ -413,6 +370,10 @@ $(document).ready(function()
 			afterSliding(slideshow);
 		}
 	});
+	
+	$('.experienceList').append('<a href="index.php" title="See all experiences" onclick="unAllEyes(); return false;" class="seeAll">Back to all experiences</a>');
+	$('.skillList').append('<a href="index.php" title="See all skills" onclick="unAllEyes(); return false;" class="seeAll">Back to all skills</a>');
+	$('.seeAll').hide();
 	
 	$('.experience .header a').add($('.skill .header a')).each(function()
 	{

@@ -70,25 +70,6 @@
 				}
 				echo($str . "\n");
 			?>
-						<h2 class="breadcrumbs experienceCrumbs">
-							<?php
-								$str = "";
-								$spacing = "\n\t\t\t\t\t\t";
-								if(isset($_GET['eid']))
-								{
-									$str .= ($spacing . "<a href=\"index.php\" title=\"See all experiences\">Experiences</a> >> Zoom in on an experience");
-								}
-								else if(isset($_GET['sid']))
-								{
-									$str .= ($spacing . "<a href=\"index.php\" title=\"See all experiences\">Experiences</a> >> Perfecting this skill");
-								}
-								else
-								{
-									$str .= ($spacing . "Experiences");
-								}
-								echo($str . "\n");
-							?>
-						</h2>
 						<ul>
 							<?php
 								$str = "";
@@ -147,16 +128,16 @@
 									$referrals = mysql_query($sql_getReferrals);
 									$nbReferrals = $referrals?mysql_num_rows($referrals):0;
 								
-									/*$sql_getLinks = "
+									$sql_getLinks = "
 										SELECT
 											url,
 											title,
 											text
 										FROM
-											experience_link_matrix
+											experience_link
 										WHERE experience = " . $experience['eID'];
 									$links = mysql_query($sql_getLinks);
-									$nbLinks = $links?mysql_num_rows($links):0;*/
+									$nbLinks = $links?mysql_num_rows($links):0;
 								
 									$str .= ($spacing . "<li id=\"experience_" . $experience['eID'] . "\" class=\"experience\">");
 									$str .= ($spacing . "\t<h3 class=\"header\">");
@@ -211,15 +192,16 @@
 									$str .= ($spacing . "\t\t<p class=\"seeOtherColumn\">Skills perfected <img src=\"images/supportingSkill.png\" alt=\"See other column\" /></p>");
 								
 									// Links
-									/*if($nbLinks > 0)
+									if($nbLinks > 0)
 									{
 										$str .= ($spacing . "\t\t<ul class=\"linkList\">");
 										while($link = mysql_fetch_array($links))
 										{
-											$str .= ($spacing . "\t\t\t<li><a href=\"" . $link['url'] . "\" title=\"" . $link['title'] . "\">" . $link['text'] . "</a></li>");
+											$str .= ($spacing . "\t\t\t<li><a href=\"" . $link['url'] . "\" title=\"" . $link['title'] . "\" target=\"_blank\">" . $link['text'] . "</a></li>");
 										}
+										mysql_free_result($links);
 										$str .= ($spacing . "\t\t</ul>");
-									}*/
+									}
 									$str .= ($spacing . "\t</div>");
 								
 									if(isset($_GET['sid']))
@@ -270,25 +252,6 @@
 						}
 						echo($str . "\n");
 					?>
-						<h2 class="breadcrumbs skillCrumbs">
-							<?php
-								$str = "";
-								$spacing = "\n\t\t\t\t\t\t";
-								if(isset($_GET['sid']))
-								{
-									$str .= ($spacing . "<a href=\"index.php\" title=\"See all skills\">Skills</a> >> Zoom in on a skill");
-								}
-								else if(isset($_GET['eid']))
-								{
-									$str .= ($spacing . "<a href=\"index.php\" title=\"See all skills\">Skills</a> >> Perfected during this experience");
-								}
-								else
-								{
-									$str .= ($spacing . "Skills");
-								}
-								echo($str . "\n");
-							?>
-						</h2>
 						<ul>
 							<?php
 								$str = "";
