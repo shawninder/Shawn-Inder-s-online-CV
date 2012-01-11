@@ -362,36 +362,37 @@
 			</div>
 		</div>
 		<ul id="moreOptionsMenu">
-				<li><a href="french.php" title="Accéder à la version française du site web" xml:lang="fr" onclick="alert('Désolé!\nJe n\'ai pas encore traduit mes textes en français.'); return false;">Version Française</a></li>
-				<li>
-					<!--<a id="downloadLink" href="download.php" title="Download a static version of my CV in the format of your choice">Download CV</a>-->
-					<a href="CV.pdf.php" title="Download my CV as a PDF file">Download</a>
-					<!--<div id="downloadMenu">
-						<ul>
-							<?php
-								/*
-								function addFormatIfExists($format)
+			<li><a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">shawninder@gmail.com</a></li>
+			<li><a href="french.php" title="Accéder à la version française du site web" xml:lang="fr" onclick="alert('Désolé!\nJe n\'ai pas encore traduit mes textes en français.'); return false;">Version Française</a></li>
+			<li>
+				<!--<a id="downloadLink" href="download.php" title="Download a static version of my CV in the format of your choice">Download CV</a>-->
+				<a href="CV.pdf.php" title="Download my CV as a PDF file">Download</a>
+				<!--<div id="downloadMenu">
+					<ul>
+						<?php
+							/*
+							function addFormatIfExists($format)
+							{
+								$fileName = "CV." . $format . ".php";
+								if(file_exists($fileName))
 								{
-									$fileName = "CV." . $format . ".php";
-									if(file_exists($fileName))
-									{
-										$str = "";
-										$spacing = "\n\t\t\t\t\t";
-										$str .= ($spacing . "<li><a href=\"" . $fileName . "\" title=\"Download my CV as a " . $format . " file\">as " . $format . "</a></li>");
-										echo($str . "\n");
-									}
+									$str = "";
+									$spacing = "\n\t\t\t\t\t";
+									$str .= ($spacing . "<li><a href=\"" . $fileName . "\" title=\"Download my CV as a " . $format . " file\">as " . $format . "</a></li>");
+									echo($str . "\n");
 								}
-								addFormatIfExists('pdf');
-								addFormatIfExists('doc');
-								addFormatIfExists('rtf');
-								addFormatIfExists('txt');
-								*/
-							?>
-						</ul>-->
-						<div style="clear: both;"></div>
-					</div>
-				</li>
-			</ul>
+							}
+							addFormatIfExists('pdf');
+							addFormatIfExists('doc');
+							addFormatIfExists('rtf');
+							addFormatIfExists('txt');
+							*/
+						?>
+					</ul>-->
+					<div style="clear: both;"></div>
+				</div>
+			</li>
+		</ul>
 	</body>
 </html>
 
