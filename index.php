@@ -371,7 +371,6 @@
 			</div>
 		</div>
 		<ul id="moreOptionsMenu">
-			<li><a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">shawninder@gmail.com</a></li>
 			<li><a href="french.php" title="Accéder à la version française du site web" xml:lang="fr" onclick="alert('<?php echo(sorryNoFrench()); ?>'); return false;">Version Française</a></li>
 			<li>
 				<!--<a id="downloadLink" href="download.php" title="Download a static version of my CV in the format of your choice">Download CV</a>-->
@@ -400,6 +399,12 @@
 					</ul>-->
 					<div style="clear: both;"></div>
 				</div>
+			</li>
+			<li>
+				<ul>
+					<li><a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">shawninder@gmail.com</a></li>
+					<li>#: 514-903-9082</li>
+				</ul>
 			</li>
 		</ul>
 	</body>
