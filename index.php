@@ -139,7 +139,8 @@
 												ON RE.referral = R.id
 											INNER JOIN Persons AS P
 												ON P.id = R.author
-										WHERE ERM.experience = " . $experience['eID'];
+										WHERE ERM.experience = " . $experience['eID'] . "
+										ORDER BY RE.id";
 									$referrals = mysql_query($sql_getReferrals);
 									$nbReferrals = $referrals?mysql_num_rows($referrals):0;
 								
