@@ -8,32 +8,30 @@
 	{
 		header('Location: http://shawninder.99k.org');
 	}
+
+	include("setLang.php");	// After this, $lang should be set to 'en' or 'fr'
+	include($lang . ".php");
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html version="-//W3C//DTD XHTML 1.1//EN"
-	xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr"
+	xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo($lang); ?>"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.w3.org/1999/xhtml
 		http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd"
 >
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-		<title>Shawn Inder's Interactive C.V.</title>
+		<title><?php echo($ls_title); ?></title>
 		
 		<?php
 			include("DB.php");
 			
-			function addEvaluation($nbStars, $description)
+			function addEvaluation($nbStars, $starWord, $description)
 			{
 				$nb = ($nbStars)?$nbStars:0;
-				return("<img src=\"images/stars_" . $nb . ".png\" alt=\"" . $nbStars . " stars: " . $description . "\" title=\"" . $description . "\" />");
-			}
-			
-			function sorryNoFrench()
-			{
-				return("Désolé, je travaille présentement sur la traduction française. À venir bientôt!");
+				return("<img src=\"images/stars_" . $nb . ".png\" alt=\"" . $nb . " " . $starWord . ": " . $description . "\" title=\"" . $description . "\" />");
 			}
 		?>
 
@@ -57,21 +55,17 @@
 	</head>
 	<body>
 		<div id="header">
-			<h1>CV: <a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">Shawn Inder</a><span class="printOnly"> (shawninder@gmail.com)</span></h1>
-			<p class="printOnly">Visit my website for more details: <a href="http://shawninder.99k.org">shawninder.99k.org</a></p>
-			<img src="images/ubc.jpg" id="headerBackground" alt="University of British Colombia" title="In the background: University of British Columbia" />
+			<h1>CV: <a class="emailLink" href="mailto:shawninder@gmail.com" title="<?php echo($ls_sendMeMail); ?>">Shawn Inder</a><span class="printOnly"> (shawninder@gmail.com)</span></h1>
+			<p class="printOnly"><?php echo($ls_visitMySite); ?> <a href="http://shawninder.99k.org">shawninder.99k.org</a></p>
+			<img src="images/ubc.jpg" id="headerBackground" alt="<?php echo($ls_ubcAlt); ?>" title="<?php echo($ls_ubcTitle); ?>" />
 		</div>
 		
 		<div id="theRest">
-			<img src="images/canoe.jpg" alt="A picture of me" class="background" title="Background Image: Canoeing near Vancouver!" />
+			<img src="images/canoe.jpg" alt="<?php echo($ls_canoeAlt); ?>" class="background" title="<?php echo($ls_canoeTitle); ?>" />
 			<?php
 				if(isset($fourOfour) && $fourOfour == 1)
 				{
-					echo("<h1 class=\"dissmissable\">404: Page not found. If you were looking for my CV, here it is.</h1>");
-				}
-				elseif(isset($frenchVersion) && $frenchVersion == 1)
-				{
-					echo("<h1 class=\"dissmissable\" lang=\"fr\">" . sorryNoFrench() . "</h1>");
+					echo("<h1 class=\"dissmissable\">" . $ls_404 . "</h1>");
 				}
 			?>
 			<?php
@@ -112,7 +106,7 @@
 								while($experience = mysql_fetch_array($experiences))
 								{
 									$startDate = substr($experience['eStartDate'], 0, strpos($experience['eStartDate'], "-"));
-									$endDate = ($experience['eEndDate'])?substr($experience['eEndDate'], 0, strpos($experience['eEndDate'], "-")):"now";
+									$endDate = ($experience['eEndDate'] && $experience['eEndDate'] != "0000-00-00")?substr($experience['eEndDate'], 0, strpos($experience['eEndDate'], "-")):$ls_now;
 									$dateStr = ($startDate == $endDate)?"(" . $startDate . ")":"(" . $startDate . " » " . $endDate . ")";
 								
 									$sql_getImages = "
@@ -157,7 +151,7 @@
 								
 									$str .= ($spacing . "<li id=\"experience_" . $experience['eID'] . "\" class=\"experience\">");
 									$str .= ($spacing . "\t<h3 class=\"header\">");
-									$str .= ($spacing . "\t\t<a class=\"position\" href=\"index.php?eid=" . $experience['eID'] . "\" title=\"More information about my time as a " . $experience['eTitle'] . "\">");
+									$str .= ($spacing . "\t\t<a class=\"position\" href=\"index.php?eid=" . $experience['eID'] . "\" title=\"" . $ls_positionTitle . $experience['eTitle'] . "\">");
 									$str .= ("<span class=\"onlyPosition\">" . $experience['eTitle'] . "</span>");
 									$str .= (" <span class=\"dates\">" . $dateStr . "</span>");
 									$str .= ("</a>");
@@ -195,7 +189,7 @@
 										{
 											$str .= ($spacing . "\t\t\t\t<li" . (($first)?" class=\"firstReferral\"":"") . ">");
 											$str .= ($spacing . "\t\t\t\t\t<q>" . $referral['excerpt'] . "</q>");
-											$str .= ($spacing . "\t\t\t\t\t<span class=\"signature\"> - <a href=\"mailto:" . $referral['authorEmail'] . "\" title=\"Send an e-mail to " . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "\" class=\"emailLink\">" . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "</a></span>");
+											$str .= ($spacing . "\t\t\t\t\t<span class=\"signature\"> - <a href=\"mailto:" . $referral['authorEmail'] . "\" title=\"" . $ls_sendMail . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "\" class=\"emailLink\">" . $referral['authorFirstName'] . " " . $referral['authorLastName'] . "</a></span>");
 											$str .= ($spacing . "\t\t\t\t</li>");
 											$first = false;
 										}
@@ -210,7 +204,7 @@
 									{
 										$str .= " hidden-accessible";
 									}
-									$str .= ("\">Skills perfected <img src=\"images/supportingSkill.png\" alt=\"See other column\" /></p>");
+									$str .= ("\">" . $ls_skillsPerfected . " <img src=\"images/supportingSkill.png\" alt=\"" . $ls_seeOtherColumn . "\" /></p>");
 									
 									// Links
 									if($nbLinks > 0)
@@ -251,7 +245,7 @@
 									$str .= ($spacing . "\t<p class=\"footer\">");
 									if($experience['oUrl'] != "")
 									{
-										$str .= ($spacing . "\t\t<a href=\"" . $experience['oUrl'] . "\" title=\"Visit " . $experience['oUrl'] . "\" target=\"_blank\">" . $experience['oName'] . "</a>, " . $experience['oLocation']);
+										$str .= ($spacing . "\t\t<a href=\"" . $experience['oUrl'] . "\" title=\"" . $ls_visit . $experience['oUrl'] . "\" target=\"_blank\">" . $experience['oName'] . "</a>, " . $experience['oLocation']);
 									} else {
 										$str .= ($spacing . "\t\t" . $experience['oName'] . ", " . $experience['oLocation']);
 									}
@@ -266,7 +260,7 @@
 					<?php
 					if(isset($_GET['eid']) || isset($_GET['sid']))
 						{
-							echo('<a href="index.php" title="See all experiences" class="seeAll">Back to all experiences</a>');
+							echo('<a href="index.php" title="' . $ls_seeAllExperiences . '" class="seeAll">' . $ls_backToAllExperiences . '</a>');
 						}
 						$str = "";
 						$spacing = "\n\t\t\t\t";
@@ -301,9 +295,9 @@
 								{
 									$str .= ($spacing . "<li id=\"skill_" . $skill['id'] . "\" class=\"skill\">");
 									$str .= ($spacing . "\t<h3 class=\"header\" title=\"" . $skill['name'] . "\">");
-									$str .= ($spacing . "\t\t<a class=\"skillName\" href=\"index.php?sid=" . $skill['id'] . "\" title=\"More information about my knowledge of " . $skill['name'] . "\">");
+									$str .= ($spacing . "\t\t<a class=\"skillName\" href=\"index.php?sid=" . $skill['id'] . "\" title=\"" . $ls_skillTitle . $skill['name'] . "\">");
 									$str .= ($skill['shortName'] != "")?$skill['shortName']:$skill['name'];
-									$str .= " <span class=\"stars\">" . addEvaluation($skill['stars'], $skill['selfEvaluation']) . "</span>";
+									$str .= " <span class=\"stars\">" . addEvaluation($skill['stars'], $ls_stars, $skill['selfEvaluation']) . "</span>";
 									$str .= "</a>";
 									$str .= ($spacing . "\t\t<span style=\"display: block; clear: both;\"></span>");
 									$str .= ($spacing . "\t</h3>");
@@ -314,7 +308,7 @@
 									{
 										$str .= " hidden-accessible";
 									}
-									$str .= ("\"><img src=\"images/supportingExperience.png\" alt=\"See other column\" /> Pertinent experiences</p>");
+									$str .= ("\"><img src=\"images/supportingExperience.png\" alt=\"" . $ls_seeOtherColumn . "\" /> " . $ls_pertinentExperiences . "</p>");
 									$str .= ($spacing . "\t</div>");
 									if(isset($_GET['eid']))
 									{
@@ -346,7 +340,7 @@
 			<?php
 				if(isset($_GET['eid']) || isset($_GET['sid']))
 				{
-					echo('<a href="index.php" title="See all skills" class="seeAll">Back to all skills</a>');
+					echo('<a href="index.php" title="' . $ls_seeAllSkills . '" class="seeAll">' . $ls_backToAllSkills . '</a>');
 				}
 				$str = "";
 				$spacing = "\n\t\t";
@@ -359,7 +353,6 @@
 				echo($str . "\n");
 			?>
 			<div style="clear: both;"> </div>
-			<?php $preloadAlt = "I'm just preloading the hovered version of the Previous icon here, please ignore this."; ?>
 			<div id="preload">
 				<img src="images/prev.png" alt="<?php echo($preloadAlt); ?>" />
 				<img src="images/prevON.png" alt="<?php echo($preloadAlt); ?>" />
@@ -372,10 +365,19 @@
 			</div>
 		</div>
 		<ul id="moreOptionsMenu">
-			<li><a href="french.php" title="Accéder à la version française du site web" xml:lang="fr" onclick="alert('<?php echo(sorryNoFrench()); ?>'); return false;">Version Française</a></li>
+			<?php
+				if($lang == "fr")
+				{
+					echo('<li><a href="index.php?lang=en" title="Get the english version of this website" xml:lang="en">English Version</a></li>');
+				}
+				else
+				{
+					echo('<li><a href="index.php?lang=fr" title="Accéder à la version française du site web" xml:lang="fr">Version Française</a></li>');
+				}
+			?>
 			<li>
 				<!--<a id="downloadLink" href="download.php" title="Download a static version of my CV in the format of your choice">Download CV</a>-->
-				<a href="CV.pdf.php" title="Download my CV as a PDF file">Download</a>
+				<a href="CV.pdf.php?lang=<?php echo($lang); ?>" title="<?php echo($ls_downloadTitle); ?>"><?php echo($ls_download); ?></a>
 				<!--<div id="downloadMenu">
 					<ul>
 						<?php
@@ -403,7 +405,7 @@
 			</li>
 			<li>
 				<ul>
-					<li><a class="emailLink" href="mailto:shawninder@gmail.com" title="Send me an e-mail">shawninder@gmail.com</a></li>
+					<li><a class="emailLink" href="mailto:shawninder@gmail.com" title="<?php echo($ls_sendMeMail); ?>">shawninder@gmail.com</a></li>
 					<li>#: 514-903-9082</li>
 				</ul>
 			</li>
