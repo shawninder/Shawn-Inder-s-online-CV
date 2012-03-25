@@ -262,7 +262,7 @@ $cv->setHeaderStyles();
 $cv->Write($cv->hLh, $ls_skills);
 $cv->Ln();
 
-$nbSkills = ($_SESSION['lang'] == 'en')?13:11;
+$nbSkills = ($_SESSION['lang'] == 'en')?13:10;
 $sql_getSkills = "
 	SELECT
 		id,
