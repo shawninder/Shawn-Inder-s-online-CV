@@ -9,14 +9,15 @@
 		header('Location: http://shawninder.99k.org');
 	}
 
-	include("setLang.php");	// After this, $lang should be set to 'en' or 'fr'
-	include($lang . ".php");
+	include("setLang.php");	// After this, $_SESSION['lang'] should be set to 'en' or 'fr'
+	include($_SESSION['lang'] . ".php");
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html version="-//W3C//DTD XHTML 1.1//EN"
-	xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo($lang); ?>"
+	xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo($_SESSION['lang']); ?>"
+	lang="<?php echo($_SESSION['lang']); ?>"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.w3.org/1999/xhtml
 		http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd"
@@ -151,7 +152,7 @@
 								
 									$str .= ($spacing . "<li id=\"experience_" . $experience['eID'] . "\" class=\"experience\">");
 									$str .= ($spacing . "\t<h3 class=\"header\">");
-									$str .= ($spacing . "\t\t<a class=\"position\" href=\"index.php?eid=" . $experience['eID'] . "\" title=\"" . $ls_positionTitle . $experience['eTitle'] . "\">");
+									$str .= ($spacing . "\t\t<a class=\"position\" href=\"index.php?eid=" . $experience['eID'] . "&lang=" . $_SESSION['lang'] . "\" title=\"" . $ls_positionTitle . $experience['eTitle'] . "\">");
 									$str .= ("<span class=\"onlyPosition\">" . $experience['eTitle'] . "</span>");
 									$str .= (" <span class=\"dates\">" . $dateStr . "</span>");
 									$str .= ("</a>");
@@ -260,7 +261,7 @@
 					<?php
 					if(isset($_GET['eid']) || isset($_GET['sid']))
 						{
-							echo('<a href="index.php" title="' . $ls_seeAllExperiences . '" class="seeAll">' . $ls_backToAllExperiences . '</a>');
+							echo('<a href="index.php?lang=' . $_SESSION['lang'] . '" title="' . $ls_seeAllExperiences . '" class="seeAll">' . $ls_backToAllExperiences . '</a>');
 						}
 						$str = "";
 						$spacing = "\n\t\t\t\t";
@@ -295,7 +296,7 @@
 								{
 									$str .= ($spacing . "<li id=\"skill_" . $skill['id'] . "\" class=\"skill\">");
 									$str .= ($spacing . "\t<h3 class=\"header\" title=\"" . $skill['name'] . "\">");
-									$str .= ($spacing . "\t\t<a class=\"skillName\" href=\"index.php?sid=" . $skill['id'] . "\" title=\"" . $ls_skillTitle . $skill['name'] . "\">");
+									$str .= ($spacing . "\t\t<a class=\"skillName\" href=\"index.php?sid=" . $skill['id'] . "&lang=" . $_SESSION['lang'] . "\" title=\"" . $ls_skillTitle . $skill['name'] . "\">");
 									$str .= ($skill['shortName'] != "")?$skill['shortName']:$skill['name'];
 									$str .= " <span class=\"stars\">" . addEvaluation($skill['stars'], $ls_stars, $skill['selfEvaluation']) . "</span>";
 									$str .= "</a>";
@@ -340,7 +341,7 @@
 			<?php
 				if(isset($_GET['eid']) || isset($_GET['sid']))
 				{
-					echo('<a href="index.php" title="' . $ls_seeAllSkills . '" class="seeAll">' . $ls_backToAllSkills . '</a>');
+					echo('<a href="index.php?lang=' . $_SESSION['lang'] . '" title="' . $ls_seeAllSkills . '" class="seeAll">' . $ls_backToAllSkills . '</a>');
 				}
 				$str = "";
 				$spacing = "\n\t\t";
@@ -366,7 +367,7 @@
 		</div>
 		<ul id="moreOptionsMenu">
 			<?php
-				if($lang == "fr")
+				if($_SESSION['lang'] == "fr")
 				{
 					echo('<li><a href="index.php?lang=en" title="Get the english version of this website" xml:lang="en">English Version</a></li>');
 				}
@@ -377,7 +378,7 @@
 			?>
 			<li>
 				<!--<a id="downloadLink" href="download.php" title="Download a static version of my CV in the format of your choice">Download CV</a>-->
-				<a href="CV.pdf.php?lang=<?php echo($lang); ?>" title="<?php echo($ls_downloadTitle); ?>"><?php echo($ls_download); ?></a>
+				<a href="CV.pdf.php?lang=<?php echo($_SESSION['lang']); ?>" title="<?php echo($ls_downloadTitle); ?>"><?php echo($ls_download); ?></a>
 				<!--<div id="downloadMenu">
 					<ul>
 						<?php

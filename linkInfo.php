@@ -1,4 +1,7 @@
 <?php
+	
+	include("setLang.php");	// After this, $_SESSION['lang'] should be set to 'en' or 'fr'
+	include($_SESSION['lang'] . ".php");
 	include("DB.php");
 	$jsonStr = "[";
 	$sql_getLinkInfo = "SELECT

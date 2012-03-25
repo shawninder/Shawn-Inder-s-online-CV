@@ -213,11 +213,11 @@ function clickOnElementHeader(element)
 	}
 }
 
-function getLinkInfo()
+function getLinkInfo(lang)
 {
 	$.ajax({
 		type: "GET",
-		url: "linkInfo.php"
+		url: "linkInfo.php?lang=" + lang
 	}).done(function(msg)
 	{
 		var data = $.parseJSON(msg), dataLength = data.length;
@@ -310,6 +310,7 @@ function unAllEyes()
 
 $(document).ready(function()
 {
+	var lang = document.getElementsByTagName('html')[0].lang;
 	window.dontTouchDownloadMenu = false;
 	window.preventAction = true;
 	var downloadLink = $('#downloadLink');
@@ -371,8 +372,16 @@ $(document).ready(function()
 		}
 	});
 	
-	$('.experienceList').append('<a href="index.php" title="See all experiences" onclick="unAllEyes(); return false;" class="seeAll">Back to all experiences</a>');
-	$('.skillList').append('<a href="index.php" title="See all skills" onclick="unAllEyes(); return false;" class="seeAll">Back to all skills</a>');
+	if(lang == 'fr')
+	{
+		$('.experienceList').append('<a href="index.php" title="Voir toutes les expériences" onclick="unAllEyes(); return false;" class="seeAll">Retour à la liste des expériences</a>');
+		$('.skillList').append('<a href="index.php" title="Voir toutes les compétences" onclick="unAllEyes(); return false;" class="seeAll">Retour à la liste des compétences</a>');
+	}
+	else
+	{
+		$('.experienceList').append('<a href="index.php" title="See all experiences" onclick="unAllEyes(); return false;" class="seeAll">Back to all experiences</a>');
+		$('.skillList').append('<a href="index.php" title="See all skills" onclick="unAllEyes(); return false;" class="seeAll">Back to all skills</a>');
+	}
 	$('.seeAll').hide();
 	
 	$('.seeOtherColumn').removeClass('hidden-accessible');
@@ -393,8 +402,13 @@ $(document).ready(function()
 		$(this).addClass('scriptEnabled');
 	});
 	
-	getLinkInfo();
-	$('.dissmissable').attr('title','Click to dissmiss').addClass('scriptEnabledDissmissable').click(function()
+	getLinkInfo(lang);
+	var dismissalText = "Click to dismiss";
+	if(lang == 'fr')
+	{
+		dismissalText = "Cliquez pour rejeter";
+	}
+	$('.dissmissable').attr('title',dismissalText).addClass('scriptEnabledDissmissable').click(function()
 	{
 		$(this).hide();
 	});

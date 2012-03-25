@@ -9,7 +9,7 @@
 	$failureMessage = "<p>Something is going on with my web host which makes my website temporarily unavailable.<br />Sorry for the bother, please try again later.</p>";
 
 	
-	if($lang == 'fr')
+	if($_SESSION['lang'] == 'fr')
 	{
 		$databaseName = 'shawninder_99k_portfoliofr';
 		$failureMessage = "<p>Un problème du côté de mon hébergeur web rend mon site temporairement inaccessible.<br />Excusez l'inconvénient, s'il vous plaît réessayez plus tard.</p>";

@@ -23,4 +23,9 @@
 	$preloadAlt = "This image's purpose is to preload the hovered version of an icon, please ignore this.";
 	$ls_downloadTitle = "Download my CV as a PDF file";
 	$ls_download = "Download";
+	
+	$ls_spokenLanguages = "Spoken Languages";
+	$ls_experiences = "Experiences";
+	$ls_skills = "Skills";
+	$ls_personalSkills = "Personal Skills";
 ?>

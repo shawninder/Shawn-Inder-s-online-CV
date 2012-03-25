@@ -2,6 +2,8 @@
 
 require_once('fpdf17/fpdf.php');
 
+include("setLang.php");	// After this, $_SESSION['lang'] should be set to 'en' or 'fr'
+include($_SESSION['lang'] . ".php");
 require_once('DB.php');
 
 class CV extends FPDF
@@ -120,11 +122,11 @@ $cv->Cell(15);
 $cv->Write($cv->nLh, 'shawninder@gmail.com', 'mailto:shawninder@gmail.com');
 $cv->Ln();
 $cv->Cell(15);
-$cv->Write($cv->nLh, 'http://shawninder.99k.org', 'http://shawninder.99k.org');
+$cv->Write($cv->nLh, 'http://shawninder.99k.org', 'http://shawninder.99k.org?lang=' . $_SESSION['lang']);
 $cv->Ln(10);
 
 $cv->setHeaderStyles();
-$cv->Write($cv->hLh, 'Spoken Languages');
+$cv->Write($cv->hLh, $ls_spokenLanguages);
 $cv->Ln();
 
 // Languages
@@ -140,8 +142,10 @@ while($language = mysql_fetch_array($languages))
 }
 
 $cv->setHeaderStyles();
-$cv->Write($cv->hLh, 'Experiences');
+$cv->Write($cv->hLh, $ls_experiences);
 $cv->Ln();
+
+$nbExperiences = ($_SESSION['lang'] == 'en')?6:5;
 
 // Experiences
 $sql_getExperiences = "
@@ -160,13 +164,13 @@ $sql_getExperiences = "
 			ON O.id = E.organization
 	ORDER BY
 		eStartDate DESC
-	LIMIT 6;";
+	LIMIT " . $nbExperiences . ";";
 $experiences = mysql_query($sql_getExperiences);
 while($experience = mysql_fetch_array($experiences))
 {
 	// Date
 	$startDate = substr($experience['eStartDate'], 0, strpos($experience['eStartDate'], "-"));
-	$endDate = ($experience['eEndDate'])?substr($experience['eEndDate'], 0, strpos($experience['eEndDate'], "-")):"now";
+	$endDate = ($experience['eEndDate'] && $experience['eEndDate'] != "0000-00-00")?substr($experience['eEndDate'], 0, strpos($experience['eEndDate'], "-")):$ls_now;
 	$dateStr = ($startDate == $endDate)?"(" . $startDate . ")":"(" . $startDate . iconv('UTF-8', 'windows-1252', " » ") . $endDate . ")";
 
 	// Image
@@ -255,8 +259,10 @@ while($experience = mysql_fetch_array($experiences))
 
 $cv->AddPage();
 $cv->setHeaderStyles();
-$cv->Write($cv->hLh, 'Skills');
+$cv->Write($cv->hLh, $ls_skills);
 $cv->Ln();
+
+$nbSkills = ($_SESSION['lang'] == 'en')?13:11;
 $sql_getSkills = "
 	SELECT
 		id,
@@ -269,7 +275,7 @@ $sql_getSkills = "
 		Skills
 	ORDER BY
 		stars DESC
-	LIMIT 13;";
+	LIMIT " . $nbSkills . ";";
 $skills = mysql_query($sql_getSkills);
 while($skill = mysql_fetch_array($skills))
 {
@@ -278,13 +284,23 @@ while($skill = mysql_fetch_array($skills))
 }
 
 $cv->setHeaderStyles();
-$cv->Write($cv->hLh, 'Personal skills');
+$cv->Write($cv->hLh, $ls_personalSkills);
 $cv->Ln();
 
-$cv->writeFeedback("Get's Things Done", "It was exceptional how quickly Shawn became a contributing member of our team. Within a matter of two weeks, he had already largely completed the development of our first product.");
-$cv->writeFeedback("Team Spirit", "Complementing Shawn's technical and intuitive abilities, he easily socially integrated within our group, including joining colleagues for lunch time card games and hacky.");
-$cv->writeFeedback("Forward Thinking", "He was able to listen carefully to our needs [and] even though he did not know our business very well, he found a few glitches in my reasoning and was able to make corrections before the work was started, lowering the amount of hours needed for this project.");
-$cv->writeFeedback("Positive Thinking", "He had an attitude which left no space for failure.");
+if($_SESSION['lang'] == "fr")
+{
+	$cv->writeFeedback("Livre la marchandise", "Il est exceptionnel de voir la rapidité avec laquelle Shawn est devenu un membre productif de notre équipe. En deux semaines, il avait déjà terminé le développement de notre premier produit.");
+	$cv->writeFeedback("Esprit d'équipe", "Pour complémenter ses abiletés techniques et intuitives, Shawn, a facilement intégré notre groupe, entre autre en participant à des partie de cartes et de haki sur l'heure du dîner.");
+	$cv->writeFeedback("Penser avant d'agir", "Il s'est montré attentif à nos besoins et a su trouver des failles dans mon raisonnement et apporter des corrections avant le début des travaux malgré qu'il n'était pas familier avec notre entreprise, diminuant ainsi le nombre d'heures nécessaires pour ce projet.");
+	$cv->writeFeedback("Pensée positive", "Son attitude ne laissait aucune place à l'échec.");
+}
+else
+{
+	$cv->writeFeedback("Get's Things Done", "It was exceptional how quickly Shawn became a contributing member of our team. Within a matter of two weeks, he had already largely completed the development of our first product.");
+	$cv->writeFeedback("Team Spirit", "Complementing Shawn's technical and intuitive abilities, he easily socially integrated within our group, including joining colleagues for lunch time card games and hacky.");
+	$cv->writeFeedback("Forward Thinking", "He was able to listen carefully to our needs [and] even though he did not know our business very well, he found a few glitches in my reasoning and was able to make corrections before the work was started, lowering the amount of hours needed for this project.");
+	$cv->writeFeedback("Positive Thinking", "He had an attitude which left no space for failure.");
+}
 
 $cv->Output();
 

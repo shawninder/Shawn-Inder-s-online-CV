@@ -55,5 +55,5 @@
 	
 	$urlLang = $_GET['lang'];
 	$availableLanguages = array("en", "fr");
-	$lang = (isset($urlLang) && in_array($urlLang, $availableLanguages))?$urlLang:prefered_language($availableLanguages);
+	$_SESSION['lang'] = (isset($urlLang) && in_array($urlLang, $availableLanguages))?$urlLang:prefered_language($availableLanguages);
 ?>

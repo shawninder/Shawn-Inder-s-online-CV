@@ -23,4 +23,9 @@
 	$preloadAlt = "Cette image sert à charger à l'avance la version survolée d'une icone, veuillez l'ignorer.";
 	$ls_downloadTitle = "Télécharger mon CV en version PDF";
 	$ls_download = "Télécharger";
+	
+	$ls_spokenLanguages = "Langages parlés";
+	$ls_experiences = "Expériences";
+	$ls_skills = "Compétences";
+	$ls_personalSkills = "Compétences personnelles";
 ?>
