@@ -57,7 +57,21 @@ class CV extends FPDF
 		$this->Write($this->nLh, iconv('UTF-8', 'windows-1252', $name));
 		$this->Ln();
 	}
-	
+
+	function writeSchooling($school, $degree, $status, $years)
+	{
+		$this->setDefaultStyles();
+		$this->Cell(10);
+		$this->Cell(55, $this->nLh, iconv('UTF-8', 'windows-1252', $school));
+		$this->Cell(5);
+		$this->Cell(50, $this->nLh, iconv('UTF-8', 'windows-1252', $degree));
+		$this->Cell(5);
+		$this->Cell(25, $this->nLh, iconv('UTF-8', 'windows-1252', $status));
+		$this->Cell(5);
+		$this->Cell(20, $this->nLh, iconv('UTF-8', 'windows-1252', $years));
+		$this->Ln();
+	}
+
 	function writeExperience(
 		$title,
 		$dateStr,
@@ -126,7 +140,7 @@ $cv->Write($cv->nLh, 'http://shawninder.99k.org', 'http://shawninder.99k.org?lan
 $cv->Ln(10);
 
 $cv->setHeaderStyles();
-$cv->Write($cv->hLh, $ls_spokenLanguages);
+$cv->Write($cv->hLh, iconv('UTF-8', 'windows-1252', $ls_spokenLanguages));
 $cv->Ln();
 
 // Languages
@@ -142,7 +156,25 @@ while($language = mysql_fetch_array($languages))
 }
 
 $cv->setHeaderStyles();
-$cv->Write($cv->hLh, $ls_experiences);
+$cv->Write($cv->hLh, iconv('UTF-8', 'windows-1252', $ls_schooling));
+$cv->Ln();
+
+// Schooling
+$sql_getSchooling = "
+	SELECT
+		school, degree, status, years
+	FROM
+		schooling
+	ORDER BY
+		years;";
+$schooling = mysql_query($sql_getSchooling);
+while($schoolingExperience = mysql_fetch_array($schooling))
+{
+	$cv->writeSchooling($schoolingExperience['school'], $schoolingExperience['degree'], $schoolingExperience['status'], $schoolingExperience['years']);
+}
+
+$cv->setHeaderStyles();
+$cv->Write($cv->hLh, iconv('UTF-8', 'windows-1252', $ls_experiences));
 $cv->Ln();
 
 $nbExperiences = ($_SESSION['lang'] == 'en')?6:5;
@@ -259,7 +291,7 @@ while($experience = mysql_fetch_array($experiences))
 
 $cv->AddPage();
 $cv->setHeaderStyles();
-$cv->Write($cv->hLh, $ls_skills);
+$cv->Write($cv->hLh, iconv('UTF-8', 'windows-1252', $ls_skills));
 $cv->Ln();
 
 $nbSkills = ($_SESSION['lang'] == 'en')?13:8;
@@ -284,7 +316,7 @@ while($skill = mysql_fetch_array($skills))
 }
 
 $cv->setHeaderStyles();
-$cv->Write($cv->hLh, $ls_personalSkills);
+$cv->Write($cv->hLh, iconv('UTF-8', 'windows-1252', $ls_personalSkills));
 $cv->Ln();
 
 if($_SESSION['lang'] == "fr")

@@ -1,6 +1,6 @@
 --
 -- MySQL 5.1.61
--- Wed, 18 Apr 2012 01:11:31 +0000
+-- Wed, 18 Apr 2012 02:17:44 +0000
 --
 
 CREATE TABLE `Experiences` (
@@ -191,3 +191,13 @@ INSERT INTO `experience_skill_matrix` (`skill`, `experience`, `description`) VAL
 INSERT INTO `experience_skill_matrix` (`skill`, `experience`, `description`) VALUES ('10', '5', 'The MySQL database backing this website is fairly simple, but it allows me to treat my CV\'s content and presentation separately. I\'m currently working on a comment system allowing me to organize and present visitor feedback as well as employer feedback!');
 INSERT INTO `experience_skill_matrix` (`skill`, `experience`, `description`) VALUES ('6', '6', 'Making this game involved translating complex game logic and a rich set of features into efficient, multi-threaded C++ code to offer high-speed action fun to the gamer.');
 INSERT INTO `experience_skill_matrix` (`skill`, `experience`, `description`) VALUES ('7', '6', 'Some of our game\'s features, like level editing, required complete user interfaces capable of offering a lot of flexibility to the user and a smooth, engaging experience. We coded the user interface entirely in Java, using the Java Native Interface to communicate with the C++ libraries in which we held all the game logic and controlled the display.');
+
+CREATE TABLE `schooling` (
+   `school` varchar(50),
+   `degree` varchar(50),
+   `status` varchar(50),
+   `years` varchar(50)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+INSERT INTO `schooling` (`school`, `degree`, `status`, `years`) VALUES ('École Polytechnique de Montréal', 'Software Engineering', 'B.Eng. in progress', '2008-2011');
+INSERT INTO `schooling` (`school`, `degree`, `status`, `years`) VALUES ('Collège de Maisonneuve', 'Pure and Applied Sciences', 'DCS obtained', '2006-2008');

@@ -25,6 +25,7 @@
 	$ls_download = "Download";
 	
 	$ls_spokenLanguages = "Spoken Languages";
+	$ls_schooling = "Schooling";
 	$ls_experiences = "Experiences";
 	$ls_skills = "Skills";
 	$ls_personalSkills = "Personal Skills";
