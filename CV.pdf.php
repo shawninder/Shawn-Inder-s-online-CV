@@ -201,8 +201,8 @@ $experiences = mysql_query($sql_getExperiences);
 while($experience = mysql_fetch_array($experiences))
 {
 	// Date
-	$startDate = substr($experience['eStartDate'], 0, strpos($experience['eStartDate'], "-"));
-	$endDate = ($experience['eEndDate'] && $experience['eEndDate'] != "0000-00-00")?substr($experience['eEndDate'], 0, strpos($experience['eEndDate'], "-")):$ls_now;
+	$startDate = $experience['eStartDate'];
+	$endDate = ($experience['eEndDate'] && $experience['eEndDate'] != "0000-00-00") ? $experience['eEndDate'] : $ls_now;
 	$dateStr = ($startDate == $endDate)?"(" . $startDate . ")":"(" . $startDate . iconv('UTF-8', 'windows-1252', " » ") . $endDate . ")";
 
 	// Image
