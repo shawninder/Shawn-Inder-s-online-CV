@@ -8,6 +8,7 @@
 	$ls_canoeAlt = "Une photo de moi canotant près de Vancouver";
 	$ls_canoeTitle = "En arrière-plan: Du canot près de Vancouver!";
 	$ls_404 = "404: Page introuvable. Si vous cherchiez mon CV, le voici.";
+	$ls_serverProblems = "Un problème du côté de mon hébergeur web rend mon site temporairement inaccessible.<br />Veuillez réessayez plus tard s'il vous plaît.";
 	$ls_now = "maintenant";
 	$ls_positionTitle = "Plus d'information au sujet de mon poste de ";
 	$ls_sendMail = "Envoyer un courriel à ";

@@ -8,6 +8,7 @@
 	$ls_canoeAlt = "A picture of me canoeing near Vancouver";
 	$ls_canoeTitle = "In the background: Canoeing near Vancouver!";
 	$ls_404 = "404: Page not found. If you were looking for my CV, here it is.";
+	$ls_serverProblems = "Something is going on with my web host which makes my website temporarily unavailable.<br />Sorry for the bother, please try again later.";
 	$ls_now = "now";
 	$ls_positionTitle = "More information about my time as a ";
 	$ls_sendMail = "Send an e-mail to ";
